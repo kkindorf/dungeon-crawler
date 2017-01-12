@@ -7,8 +7,9 @@ import Mousetrap from 'mousetrap';
 class Hello extends React.Component{
   constructor(props){
     super(props);
-    this.state=({squareNum: 26, rowNum: 26, map: [], health: 100, weapons:[{weapon: 'nun-chucks', damage: 10}, {weapon: 'sword', damage: 20}, {weapon: 'AK-47', damage: 40}, {weapon: 'Bazooka', damage: 60}], playerLevel: 1, gameLevel: 1, enemyHealth: 200, enemyDamage: Math.floor(Math.random()*(9-6+1))+6, playerXP: 0, weaponLevel: 0});
+    this.state=({squareNum: 26, rowNum: 26, map: [], health: 200, weapons:[{weapon: 'nun-chucks', damage: 10}, {weapon: 'sword', damage: 20}, {weapon: 'AK-47', damage: 40}, {weapon: 'Bazooka', damage: 60}], playerLevel: 1, gameLevel: 1, enemyHealth: 150, enemyDamage: Math.floor(Math.random()*(9-6+1))+6, playerXP: 0, weaponLevel: 0});
     this.arr = [];
+    this.set2DArray = this.set2DArray.bind(this);
     this.movePlayer = this.movePlayer.bind(this);
     this.setMap = this.setMap.bind(this);
     this.randomWalk = this.randomWalk.bind(this);
@@ -19,76 +20,79 @@ class Hello extends React.Component{
   }
   componentWillMount(){
     /*** GENERATE INITIAL 2D ARRAY ***/
-    let size = this.state.squareNum * this.state.rowNum;
-    let squares = [];
-    let rows = [];
-    let middle  = size / 2;
-    for(let i = 0; i < size; i++){
-      squares.push(0)
-      if(squares.length === this.state.squareNum){
-        rows.push(squares);
-        squares = [];
-      }
-      if(rows.length === this.state.rowNum){
-        this.arr = rows;
-        rows = [];
-      }
-    }
-    this.randomWalk(this.arr);
-
-    /***SET ALL PIECES AND PLAYER***/
-    let healthCount = 0;
-    while (healthCount < 8){
-      let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      if(this.arr[x][y]===1){
-        this.arr[x][y]=3;
-        healthCount++;
-      }
-    }
-    let enemyCount = 0;
-    while(enemyCount < 6){
-      let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      if(this.arr[x][y]===1){
-        this.arr[x][y]=5;
-        enemyCount++;
-      }
-    }
-    let weapon = 0;
-    while(weapon < 1){
-      let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      if(this.arr[x][y]===1){
-        this.arr[x][y]=6;
-        weapon++;
-      }
-    }
-    let player = 0;
-    while(player < 1){
-      let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      if(this.arr[x][y]===1){
-        this.arr[x][y]=4;
-        player++;
-      }
-    }
-    let door = 0;
-    while(door < 1){
-      let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      if(this.arr[x][y]===1){
-        this.arr[x][y]=7;
-        door++;
-      }
-    }
-    this.setMap(this.arr);
+    this.set2DArray();
   }
   componentDidMount(){
   Mousetrap.bind(['up', 'down', 'right', 'left'],  this.movePlayer);
   }
   componentWillUnmount() {
   Mousetrap.unbind(['up', 'down', 'right', 'left'], this.movePlayer);
+}
+set2DArray(){
+  let size = this.state.squareNum * this.state.rowNum;
+  let squares = [];
+  let rows = [];
+  let middle  = size / 2;
+  for(let i = 0; i < size; i++){
+    squares.push(0)
+    if(squares.length === this.state.squareNum){
+      rows.push(squares);
+      squares = [];
+    }
+    if(rows.length === this.state.rowNum){
+      this.arr = rows;
+      rows = [];
+    }
+  }
+  this.randomWalk(this.arr);
+
+  /***SET ALL PIECES AND PLAYER***/
+  let healthCount = 0;
+  while (healthCount < 8){
+    let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    if(this.arr[x][y]===1){
+      this.arr[x][y]=3;
+      healthCount++;
+    }
+  }
+  let enemyCount = 0;
+  while(enemyCount < 6){
+    let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    if(this.arr[x][y]===1){
+      this.arr[x][y]=5;
+      enemyCount++;
+    }
+  }
+  let weapon = 0;
+  while(weapon < 1){
+    let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    if(this.arr[x][y]===1){
+      this.arr[x][y]=6;
+      weapon++;
+    }
+  }
+  let player = 0;
+  while(player < 1){
+    let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    if(this.arr[x][y]===1){
+      this.arr[x][y]=4;
+      player++;
+    }
+  }
+  let door = 0;
+  while(door < 1){
+    let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+    if(this.arr[x][y]===1){
+      this.arr[x][y]=7;
+      door++;
+    }
+  }
+  this.setMap(this.arr);
 }
 randomWalk(arr){
   let x = this.state.squareNum / 2;
@@ -161,18 +165,21 @@ randomWalk(arr){
        }
        else if(this.arr[x-1][y]===5){
          this.combat();
-         if(this.state.enemyHealth <=0 || this.state.health <=0){
+         if(this.state.enemyHealth <=0 && this.state.health > 0){
            this.arr[x-1][y]=4;
            this.resetEnemyHealth();
 
          }
        }
        else if(this.arr[x-1][y]===6){
-         this.setState({weapon: 'sword'})
+         this.setState({weaponLevel: this.state.weaponLevel+1})
          this.arr[x-1][y]=4;
        }
        else if(this.arr[x-1][y]===7){
-         this.arr[x-1][y]=4;
+         this.arr[x-1][y]=7;
+         this.arr = [];
+         this.setState({gameLevel: this.state.gameLevel+1})
+         this.set2DArray();
        }
      }
      this.setMap(this.arr);
@@ -192,17 +199,20 @@ randomWalk(arr){
       }
       else if(this.arr[x+1][y]===5){
         this.combat();
-        if(this.state.enemyHealth <=0 || this.state.health <=0){
+        if(this.state.enemyHealth <=0 && this.state.health >0){
           this.arr[x+1][y]=4;
           this.resetEnemyHealth();
         }
       }
       else if(this.arr[x+1][y]===6){
-        this.setState({weapon: 'sword'})
+        this.setState({weaponLevel: this.state.weaponLevel+1})
         this.arr[x+1][y]=4;
       }
       else if(this.arr[x+1][y]===7){
-        this.arr[x+1][y]=4;
+        this.arr[x-1][y]=7;
+        this.arr = [];
+        this.setState({gameLevel: this.state.gameLevel+1})
+        this.set2DArray();
       }
     }
     this.setMap(this.arr);
@@ -222,17 +232,20 @@ randomWalk(arr){
       }
       else if(this.arr[x][y+1]===5){
         this.combat();
-        if(this.state.enemyHealth <=0 || this.state.health <=0){
+        if(this.state.enemyHealth <=0 && this.state.health > 0){
           this.arr[x][y+1]=4;
           this.resetEnemyHealth();
         }
       }
       else if(this.arr[x][y+1]===6){
-        this.setState({weapon: 'sword'})
+        this.setState({weaponLevel: this.state.weaponLevel+1})
         this.arr[x][y+1]=4;
       }
       else if(this.arr[x][y+1]===7){
-        this.arr[x][y+1]=4;
+        this.arr[x-1][y]=7;
+        this.arr = [];
+        this.setState({gameLevel: this.state.gameLevel+1})
+        this.set2DArray();
       }
     }
     this.setMap(this.arr);
@@ -252,17 +265,20 @@ randomWalk(arr){
       }
       else if(this.arr[x][y-1]===5){
         this.combat();
-        if(this.state.enemyHealth <=0 || this.state.health <=0){
+        if(this.state.enemyHealth <=0 && this.state.health > 0){
           this.arr[x][y-1]=4;
           this.resetEnemyHealth();
         }
       }
       else if(this.arr[x][y-1]===6){
-        this.setState({weapon: 'sword'})
+        this.setState({weaponLevel: this.state.weaponLevel+1})
         this.arr[x][y-1]=4;
       }
       else if(this.arr[x][y-1]===7){
-        this.arr[x][y-1]=4;
+        this.arr[x-1][y]=7;
+        this.arr = [];
+        this.setState({gameLevel: this.state.gameLevel+1})
+        this.set2DArray();
       }
     }
     this.setMap(this.arr);
@@ -294,7 +310,7 @@ randomWalk(arr){
    console.log(this.state.enemyHealth)
  }
  resetEnemyHealth(){
-   this.setState({enemyHealth: 100})
+   this.setState({enemyHealth: 150})
  }
 
 setMap(arr){
@@ -328,7 +344,7 @@ setMap(arr){
      rows.push(<Row key = {i} squares = {squares}/>);
      squares = [];
      if(rows.length === this.state.rowNum){
-        this.setState({map: rows, hi: 'bye'})
+        this.setState({map: rows})
       }
     }
   }

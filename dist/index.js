@@ -21632,8 +21632,9 @@ var Hello = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Hello.__proto__ || Object.getPrototypeOf(Hello)).call(this, props));
 
-    _this.state = { squareNum: 26, rowNum: 26, map: [], health: 100, weapons: [{ weapon: 'nun-chucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }], playerLevel: 1, gameLevel: 1, enemyHealth: 100, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, weaponLevel: 0 };
+    _this.state = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nun-chucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, weaponLevel: 0 };
     _this.arr = [];
+    _this.set2DArray = _this.set2DArray.bind(_this);
     _this.movePlayer = _this.movePlayer.bind(_this);
     _this.setMap = _this.setMap.bind(_this);
     _this.randomWalk = _this.randomWalk.bind(_this);
@@ -21648,6 +21649,21 @@ var Hello = function (_React$Component) {
     key: 'componentWillMount',
     value: function componentWillMount() {
       /*** GENERATE INITIAL 2D ARRAY ***/
+      this.set2DArray();
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _mousetrap2.default.bind(['up', 'down', 'right', 'left'], this.movePlayer);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _mousetrap2.default.unbind(['up', 'down', 'right', 'left'], this.movePlayer);
+    }
+  }, {
+    key: 'set2DArray',
+    value: function set2DArray() {
       var size = this.state.squareNum * this.state.rowNum;
       var squares = [];
       var rows = [];
@@ -21714,16 +21730,6 @@ var Hello = function (_React$Component) {
       this.setMap(this.arr);
     }
   }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      _mousetrap2.default.bind(['up', 'down', 'right', 'left'], this.movePlayer);
-    }
-  }, {
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      _mousetrap2.default.unbind(['up', 'down', 'right', 'left'], this.movePlayer);
-    }
-  }, {
     key: 'randomWalk',
     value: function randomWalk(arr) {
       var x = this.state.squareNum / 2;
@@ -21788,15 +21794,18 @@ var Hello = function (_React$Component) {
             this.arr[x - 1][y] = 4;
           } else if (this.arr[x - 1][y] === 5) {
             this.combat();
-            if (this.state.enemyHealth <= 0 || this.state.health <= 0) {
+            if (this.state.enemyHealth <= 0 && this.state.health > 0) {
               this.arr[x - 1][y] = 4;
               this.resetEnemyHealth();
             }
           } else if (this.arr[x - 1][y] === 6) {
-            this.setState({ weapon: 'sword' });
+            this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x - 1][y] = 4;
           } else if (this.arr[x - 1][y] === 7) {
-            this.arr[x - 1][y] = 4;
+            this.arr[x - 1][y] = 7;
+            this.arr = [];
+            this.setState({ gameLevel: this.state.gameLevel + 1 });
+            this.set2DArray();
           }
         }
         this.setMap(this.arr);
@@ -21814,15 +21823,18 @@ var Hello = function (_React$Component) {
             this.arr[x + 1][y] = 4;
           } else if (this.arr[x + 1][y] === 5) {
             this.combat();
-            if (this.state.enemyHealth <= 0 || this.state.health <= 0) {
+            if (this.state.enemyHealth <= 0 && this.state.health > 0) {
               this.arr[x + 1][y] = 4;
               this.resetEnemyHealth();
             }
           } else if (this.arr[x + 1][y] === 6) {
-            this.setState({ weapon: 'sword' });
+            this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x + 1][y] = 4;
           } else if (this.arr[x + 1][y] === 7) {
-            this.arr[x + 1][y] = 4;
+            this.arr[x - 1][y] = 7;
+            this.arr = [];
+            this.setState({ gameLevel: this.state.gameLevel + 1 });
+            this.set2DArray();
           }
         }
         this.setMap(this.arr);
@@ -21840,15 +21852,18 @@ var Hello = function (_React$Component) {
             this.arr[x][y + 1] = 4;
           } else if (this.arr[x][y + 1] === 5) {
             this.combat();
-            if (this.state.enemyHealth <= 0 || this.state.health <= 0) {
+            if (this.state.enemyHealth <= 0 && this.state.health > 0) {
               this.arr[x][y + 1] = 4;
               this.resetEnemyHealth();
             }
           } else if (this.arr[x][y + 1] === 6) {
-            this.setState({ weapon: 'sword' });
+            this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x][y + 1] = 4;
           } else if (this.arr[x][y + 1] === 7) {
-            this.arr[x][y + 1] = 4;
+            this.arr[x - 1][y] = 7;
+            this.arr = [];
+            this.setState({ gameLevel: this.state.gameLevel + 1 });
+            this.set2DArray();
           }
         }
         this.setMap(this.arr);
@@ -21866,15 +21881,18 @@ var Hello = function (_React$Component) {
             this.arr[x][y - 1] = 4;
           } else if (this.arr[x][y - 1] === 5) {
             this.combat();
-            if (this.state.enemyHealth <= 0 || this.state.health <= 0) {
+            if (this.state.enemyHealth <= 0 && this.state.health > 0) {
               this.arr[x][y - 1] = 4;
               this.resetEnemyHealth();
             }
           } else if (this.arr[x][y - 1] === 6) {
-            this.setState({ weapon: 'sword' });
+            this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x][y - 1] = 4;
           } else if (this.arr[x][y - 1] === 7) {
-            this.arr[x][y - 1] = 4;
+            this.arr[x - 1][y] = 7;
+            this.arr = [];
+            this.setState({ gameLevel: this.state.gameLevel + 1 });
+            this.set2DArray();
           }
         }
         this.setMap(this.arr);
@@ -21911,7 +21929,7 @@ var Hello = function (_React$Component) {
   }, {
     key: 'resetEnemyHealth',
     value: function resetEnemyHealth() {
-      this.setState({ enemyHealth: 100 });
+      this.setState({ enemyHealth: 150 });
     }
   }, {
     key: 'setMap',
@@ -21940,7 +21958,7 @@ var Hello = function (_React$Component) {
           rows.push(_react2.default.createElement(_row2.default, { key: i, squares: squares }));
           squares = [];
           if (rows.length === this.state.rowNum) {
-            this.setState({ map: rows, hi: 'bye' });
+            this.setState({ map: rows });
           }
         }
       }
