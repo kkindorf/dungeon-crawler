@@ -2,21 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Square from './components/square';
 import Row from './components/row';
-import Health from './components/health';
-import Player from './components/player';
-import Enemy from './components/enemy';
-import Weapon from './components/weapon';
-import Door from './components/door';
 import Mousetrap from 'mousetrap';
 
 class Hello extends React.Component{
   constructor(props){
     super(props);
-    this.state=({squareNum: 26, rowNum: 26, map: [], health: 0, weapon:'fists'});
+    this.state=({squareNum: 26, rowNum: 26, map: [], health: 100, weapons:[{weapon: 'nun-chucks', damage: 10}, {weapon: 'sword', damage: 20}, {weapon: 'AK-47', damage: 40}, {weapon: 'Bazooka', damage: 60}], playerLevel: 1, gameLevel: 1, enemyHealth: 200, enemyDamage: Math.floor(Math.random()*(9-6+1))+6, playerXP: 0, weaponLevel: 0});
     this.arr = [];
     this.movePlayer = this.movePlayer.bind(this);
     this.setMap = this.setMap.bind(this);
     this.randomWalk = this.randomWalk.bind(this);
+    this.combat = this.combat.bind(this);
+    this.enemyAttack = this.enemyAttack.bind(this);
+    this.playerAttack = this.playerAttack.bind(this);
+    this.resetEnemyHealth = this.resetEnemyHealth.bind(this);
   }
   componentWillMount(){
     /*** GENERATE INITIAL 2D ARRAY ***/
@@ -143,7 +142,6 @@ randomWalk(arr){
         if(this.arr[i][j] === 4){
           x = i;
           y = j;
-          console.log(x, y);
         }
       }
     }
@@ -158,11 +156,16 @@ randomWalk(arr){
          this.arr[x-1][y]=4;
        }
        else if(this.arr[x-1][y]===3){
-         this.setState({health: this.state.health+10})
+         this.setState({health: this.state.health+25})
          this.arr[x-1][y]=4;
        }
        else if(this.arr[x-1][y]===5){
-         this.arr[x-1][y]=4;
+         this.combat();
+         if(this.state.enemyHealth <=0 || this.state.health <=0){
+           this.arr[x-1][y]=4;
+           this.resetEnemyHealth();
+
+         }
        }
        else if(this.arr[x-1][y]===6){
          this.setState({weapon: 'sword'})
@@ -184,11 +187,15 @@ randomWalk(arr){
         this.arr[x+1][y]=4;
       }
       else if(this.arr[x+1][y]===3){
-        this.setState({health: this.state.health+10})
+        this.setState({health: this.state.health+25})
         this.arr[x+1][y]=4;
       }
       else if(this.arr[x+1][y]===5){
-        this.arr[x+1][y]=4;
+        this.combat();
+        if(this.state.enemyHealth <=0 || this.state.health <=0){
+          this.arr[x+1][y]=4;
+          this.resetEnemyHealth();
+        }
       }
       else if(this.arr[x+1][y]===6){
         this.setState({weapon: 'sword'})
@@ -210,11 +217,15 @@ randomWalk(arr){
         this.arr[x][y+1]=4;
       }
       else if(this.arr[x][y+1]===3){
-        this.setState({health: this.state.health+10})
+        this.setState({health: this.state.health+25})
         this.arr[x][y+1]=4;
       }
       else if(this.arr[x][y+1]===5){
-        this.arr[x][y+1]=4;
+        this.combat();
+        if(this.state.enemyHealth <=0 || this.state.health <=0){
+          this.arr[x][y+1]=4;
+          this.resetEnemyHealth();
+        }
       }
       else if(this.arr[x][y+1]===6){
         this.setState({weapon: 'sword'})
@@ -236,11 +247,15 @@ randomWalk(arr){
         this.arr[x][y-1]=4;
       }
       else if(this.arr[x][y-1]===3){
-        this.setState({health: this.state.health+10})
+        this.setState({health: this.state.health+25})
         this.arr[x][y-1]=4;
       }
       else if(this.arr[x][y-1]===5){
-        this.arr[x][y-1]=4;
+        this.combat();
+        if(this.state.enemyHealth <=0 || this.state.health <=0){
+          this.arr[x][y-1]=4;
+          this.resetEnemyHealth();
+        }
       }
       else if(this.arr[x][y-1]===6){
         this.setState({weapon: 'sword'})
@@ -253,6 +268,34 @@ randomWalk(arr){
     this.setMap(this.arr);
    }
  }
+ combat(){
+   let playerTurn = 1;
+   let enemyTurn = 0;
+   while(this.state.enemyHealth > 0 && this.state.health > 0){
+     if(playerTurn > enemyTurn){
+       this.playerAttack();
+       enemyTurn++;
+     }
+     else if(enemyTurn === playerTurn){
+       this.enemyAttack();
+       this.setState({enemyDamage: Math.floor(Math.random()*(8-6+1))+6})
+       playerTurn++;
+     }
+   }
+
+ }
+ enemyAttack(){
+   this.setState({health: this.state.health - this.state.enemyDamage})
+   console.log(this.state.enemyDamage)
+
+ }
+ playerAttack(){
+   this.setState({enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage})
+   console.log(this.state.enemyHealth)
+ }
+ resetEnemyHealth(){
+   this.setState({enemyHealth: 100})
+ }
 
 setMap(arr){
     /**RESETTING MAP BASED ON PLAYER LOAD OR INITIAL RENDER**/
@@ -261,19 +304,19 @@ setMap(arr){
   let flatArr = [].concat.apply([], arr);
   for(let i = 0; i < flatArr.length; i++){
     if(flatArr[i] === 3){
-      squares.push(<Health key = {i}/>);
+      squares.push(<Square key = {i} class ="health"/>);
     }
     else if(flatArr[i] === 4){
-      squares.push(<Player key={i}/>);
+      squares.push(<Square key={i} class ="player"/>);
     }
     else if(flatArr[i] === 5){
-      squares.push(<Enemy key = {i}/>);
+      squares.push(<Square key = {i} class ="enemy"/>);
     }
     else if(flatArr[i]===6){
-      squares.push(<Weapon key = {i}/>);
+      squares.push(<Square key = {i} class ="weapon"/>);
     }
     else if(flatArr[i] === 7){
-      squares.push(<Door key = {i}/>);
+      squares.push(<Square key = {i} class ="door"/>);
     }
     else if(flatArr[i] === 0){
       squares.push(<Square key = {i} class ='wall'/>);
@@ -290,11 +333,16 @@ setMap(arr){
     }
   }
 }
+
   render(){
     return(
       <div>
-        <h3>{this.state.health}</h3>
-        <h3>{this.state.weapon}</h3>
+        <h3>Game Level:{this.state.gameLevel}</h3>
+        <h3>Player Experience: {this.state.playerXP}</h3>
+        <h3>Player Level: {this.state.playerLevel}</h3>
+        <h3>Player Health: {this.state.health}</h3>
+        <h3>Weapon: {this.state.weapons[this.state.weaponLevel].weapon}</h3>
+        <h3>Attack: {this.state.weapons[this.state.weaponLevel].damage}</h3>
         {this.state.map}
       </div>
     )

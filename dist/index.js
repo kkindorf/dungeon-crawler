@@ -21506,74 +21506,6 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Door = function Door(props) {
-  return _react2.default.createElement(
-    "div",
-    null,
-    _react2.default.createElement("div", { className: "door", onChange: props.onChange })
-  );
-};
-exports.default = Door;
-
-},{"react":178}],180:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Enemy = function Enemy(props) {
-  return _react2.default.createElement(
-    "div",
-    null,
-    _react2.default.createElement("div", { className: "enemy", onChange: props.onChange })
-  );
-};
-
-exports.default = Enemy;
-
-},{"react":178}],181:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Health = function Health(props) {
-  return _react2.default.createElement(
-    "div",
-    null,
-    _react2.default.createElement("div", { className: "health", onChange: props.onChange })
-  );
-};
-
-exports.default = Health;
-
-},{"react":178}],182:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var Map = function Map(props) {
   return _react2.default.createElement(
     "div",
@@ -21587,7 +21519,7 @@ var Map = function Map(props) {
 };
 exports.default = Map;
 
-},{"react":178}],183:[function(require,module,exports){
+},{"react":178}],180:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21609,7 +21541,7 @@ var Player = function Player(props) {
 };
 exports.default = Player;
 
-},{"react":178}],184:[function(require,module,exports){
+},{"react":178}],181:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21636,7 +21568,7 @@ var Row = function Row(props) {
 
 exports.default = Row;
 
-},{"react":178}],185:[function(require,module,exports){
+},{"react":178}],182:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21659,29 +21591,7 @@ var Square = function Square(props) {
 
 exports.default = Square;
 
-},{"react":178}],186:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Weapon = function Weapon(props) {
-  return _react2.default.createElement(
-    "div",
-    null,
-    _react2.default.createElement("div", { className: "weapon", onChange: props.onChange })
-  );
-};
-exports.default = Weapon;
-
-},{"react":178}],187:[function(require,module,exports){
+},{"react":178}],183:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -21701,26 +21611,6 @@ var _square2 = _interopRequireDefault(_square);
 var _row = require('./components/row');
 
 var _row2 = _interopRequireDefault(_row);
-
-var _health = require('./components/health');
-
-var _health2 = _interopRequireDefault(_health);
-
-var _player = require('./components/player');
-
-var _player2 = _interopRequireDefault(_player);
-
-var _enemy = require('./components/enemy');
-
-var _enemy2 = _interopRequireDefault(_enemy);
-
-var _weapon = require('./components/weapon');
-
-var _weapon2 = _interopRequireDefault(_weapon);
-
-var _door = require('./components/door');
-
-var _door2 = _interopRequireDefault(_door);
 
 var _mousetrap = require('mousetrap');
 
@@ -21742,11 +21632,15 @@ var Hello = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Hello.__proto__ || Object.getPrototypeOf(Hello)).call(this, props));
 
-    _this.state = { squareNum: 26, rowNum: 26, map: [], health: 0, weapon: 'fists' };
+    _this.state = { squareNum: 26, rowNum: 26, map: [], health: 100, weapons: [{ weapon: 'nun-chucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }], playerLevel: 1, gameLevel: 1, enemyHealth: 100, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, weaponLevel: 0 };
     _this.arr = [];
     _this.movePlayer = _this.movePlayer.bind(_this);
     _this.setMap = _this.setMap.bind(_this);
     _this.randomWalk = _this.randomWalk.bind(_this);
+    _this.combat = _this.combat.bind(_this);
+    _this.enemyAttack = _this.enemyAttack.bind(_this);
+    _this.playerAttack = _this.playerAttack.bind(_this);
+    _this.resetEnemyHealth = _this.resetEnemyHealth.bind(_this);
     return _this;
   }
 
@@ -21877,7 +21771,6 @@ var Hello = function (_React$Component) {
           if (this.arr[i][j] === 4) {
             x = i;
             y = j;
-            console.log(x, y);
           }
         }
       }
@@ -21891,10 +21784,14 @@ var Hello = function (_React$Component) {
           if (this.arr[x - 1][y] === 1) {
             this.arr[x - 1][y] = 4;
           } else if (this.arr[x - 1][y] === 3) {
-            this.setState({ health: this.state.health + 10 });
+            this.setState({ health: this.state.health + 25 });
             this.arr[x - 1][y] = 4;
           } else if (this.arr[x - 1][y] === 5) {
-            this.arr[x - 1][y] = 4;
+            this.combat();
+            if (this.state.enemyHealth <= 0 || this.state.health <= 0) {
+              this.arr[x - 1][y] = 4;
+              this.resetEnemyHealth();
+            }
           } else if (this.arr[x - 1][y] === 6) {
             this.setState({ weapon: 'sword' });
             this.arr[x - 1][y] = 4;
@@ -21913,10 +21810,14 @@ var Hello = function (_React$Component) {
           if (this.arr[x + 1][y] === 1) {
             this.arr[x + 1][y] = 4;
           } else if (this.arr[x + 1][y] === 3) {
-            this.setState({ health: this.state.health + 10 });
+            this.setState({ health: this.state.health + 25 });
             this.arr[x + 1][y] = 4;
           } else if (this.arr[x + 1][y] === 5) {
-            this.arr[x + 1][y] = 4;
+            this.combat();
+            if (this.state.enemyHealth <= 0 || this.state.health <= 0) {
+              this.arr[x + 1][y] = 4;
+              this.resetEnemyHealth();
+            }
           } else if (this.arr[x + 1][y] === 6) {
             this.setState({ weapon: 'sword' });
             this.arr[x + 1][y] = 4;
@@ -21935,10 +21836,14 @@ var Hello = function (_React$Component) {
           if (this.arr[x][y + 1] === 1) {
             this.arr[x][y + 1] = 4;
           } else if (this.arr[x][y + 1] === 3) {
-            this.setState({ health: this.state.health + 10 });
+            this.setState({ health: this.state.health + 25 });
             this.arr[x][y + 1] = 4;
           } else if (this.arr[x][y + 1] === 5) {
-            this.arr[x][y + 1] = 4;
+            this.combat();
+            if (this.state.enemyHealth <= 0 || this.state.health <= 0) {
+              this.arr[x][y + 1] = 4;
+              this.resetEnemyHealth();
+            }
           } else if (this.arr[x][y + 1] === 6) {
             this.setState({ weapon: 'sword' });
             this.arr[x][y + 1] = 4;
@@ -21957,10 +21862,14 @@ var Hello = function (_React$Component) {
           if (this.arr[x][y - 1] === 1) {
             this.arr[x][y - 1] = 4;
           } else if (this.arr[x][y - 1] === 3) {
-            this.setState({ health: this.state.health + 10 });
+            this.setState({ health: this.state.health + 25 });
             this.arr[x][y - 1] = 4;
           } else if (this.arr[x][y - 1] === 5) {
-            this.arr[x][y - 1] = 4;
+            this.combat();
+            if (this.state.enemyHealth <= 0 || this.state.health <= 0) {
+              this.arr[x][y - 1] = 4;
+              this.resetEnemyHealth();
+            }
           } else if (this.arr[x][y - 1] === 6) {
             this.setState({ weapon: 'sword' });
             this.arr[x][y - 1] = 4;
@@ -21972,6 +21881,39 @@ var Hello = function (_React$Component) {
       }
     }
   }, {
+    key: 'combat',
+    value: function combat() {
+      var playerTurn = 1;
+      var enemyTurn = 0;
+      while (this.state.enemyHealth > 0 && this.state.health > 0) {
+        if (playerTurn > enemyTurn) {
+          this.playerAttack();
+          enemyTurn++;
+        } else if (enemyTurn === playerTurn) {
+          this.enemyAttack();
+          this.setState({ enemyDamage: Math.floor(Math.random() * (8 - 6 + 1)) + 6 });
+          playerTurn++;
+        }
+      }
+    }
+  }, {
+    key: 'enemyAttack',
+    value: function enemyAttack() {
+      this.setState({ health: this.state.health - this.state.enemyDamage });
+      console.log(this.state.enemyDamage);
+    }
+  }, {
+    key: 'playerAttack',
+    value: function playerAttack() {
+      this.setState({ enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage });
+      console.log(this.state.enemyHealth);
+    }
+  }, {
+    key: 'resetEnemyHealth',
+    value: function resetEnemyHealth() {
+      this.setState({ enemyHealth: 100 });
+    }
+  }, {
     key: 'setMap',
     value: function setMap(arr) {
       /**RESETTING MAP BASED ON PLAYER LOAD OR INITIAL RENDER**/
@@ -21980,15 +21922,15 @@ var Hello = function (_React$Component) {
       var flatArr = [].concat.apply([], arr);
       for (var i = 0; i < flatArr.length; i++) {
         if (flatArr[i] === 3) {
-          squares.push(_react2.default.createElement(_health2.default, { key: i }));
+          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'health' }));
         } else if (flatArr[i] === 4) {
-          squares.push(_react2.default.createElement(_player2.default, { key: i }));
+          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'player' }));
         } else if (flatArr[i] === 5) {
-          squares.push(_react2.default.createElement(_enemy2.default, { key: i }));
+          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'enemy' }));
         } else if (flatArr[i] === 6) {
-          squares.push(_react2.default.createElement(_weapon2.default, { key: i }));
+          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'weapon' }));
         } else if (flatArr[i] === 7) {
-          squares.push(_react2.default.createElement(_door2.default, { key: i }));
+          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'door' }));
         } else if (flatArr[i] === 0) {
           squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'wall' }));
         } else if (flatArr[i] === 1) {
@@ -22012,12 +21954,38 @@ var Hello = function (_React$Component) {
         _react2.default.createElement(
           'h3',
           null,
+          'Game Level:',
+          this.state.gameLevel
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Player Experience: ',
+          this.state.playerXP
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Player Level: ',
+          this.state.playerLevel
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Player Health: ',
           this.state.health
         ),
         _react2.default.createElement(
           'h3',
           null,
-          this.state.weapon
+          'Weapon: ',
+          this.state.weapons[this.state.weaponLevel].weapon
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Attack: ',
+          this.state.weapons[this.state.weaponLevel].damage
         ),
         this.state.map
       );
@@ -22029,4 +21997,4 @@ var Hello = function (_React$Component) {
 
 _reactDom2.default.render(_react2.default.createElement(Hello, null), document.getElementById("app"));
 
-},{"./components/door":179,"./components/enemy":180,"./components/health":181,"./components/player":183,"./components/row":184,"./components/square":185,"./components/weapon":186,"mousetrap":24,"react":178,"react-dom":27}]},{},[179,180,181,182,183,184,185,186,187]);
+},{"./components/row":181,"./components/square":182,"mousetrap":24,"react":178,"react-dom":27}]},{},[179,180,181,182,183]);
