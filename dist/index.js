@@ -21532,28 +21532,6 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Player = function Player(props) {
-  return _react2.default.createElement(
-    "div",
-    null,
-    _react2.default.createElement("div", { className: "player", onChange: props.onChange, tabIndex: "1", onKeyDown: props.onKeyDown })
-  );
-};
-exports.default = Player;
-
-},{"react":178}],181:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var Row = function Row(props) {
   return _react2.default.createElement(
     "div",
@@ -21568,7 +21546,7 @@ var Row = function Row(props) {
 
 exports.default = Row;
 
-},{"react":178}],182:[function(require,module,exports){
+},{"react":178}],181:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21591,7 +21569,7 @@ var Square = function Square(props) {
 
 exports.default = Square;
 
-},{"react":178}],183:[function(require,module,exports){
+},{"react":178}],182:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -21624,6 +21602,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/*** DECLARE INITIALSTATE FOR EASY RESET ***/
+
+var initialState = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nun-chucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, weaponLevel: 0 };
+
 var Hello = function (_React$Component) {
   _inherits(Hello, _React$Component);
 
@@ -21632,7 +21614,7 @@ var Hello = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Hello.__proto__ || Object.getPrototypeOf(Hello)).call(this, props));
 
-    _this.state = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nun-chucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, weaponLevel: 0 };
+    _this.state = initialState;
     _this.arr = [];
     _this.set2DArray = _this.set2DArray.bind(_this);
     _this.movePlayer = _this.movePlayer.bind(_this);
@@ -21645,12 +21627,15 @@ var Hello = function (_React$Component) {
     return _this;
   }
 
+  /*** GENERATE INITIAL 2D ARRAY ***/
+
   _createClass(Hello, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      /*** GENERATE INITIAL 2D ARRAY ***/
       this.set2DArray();
     }
+    /*** USE MOUSETRAP LIBRARY FOR EASY KEYBOARD ACCESS ***/
+
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
@@ -21681,7 +21666,8 @@ var Hello = function (_React$Component) {
       }
       this.randomWalk(this.arr);
 
-      /***SET ALL PIECES AND PLAYER***/
+      /*** SET ALL PIECES AND PLAYER ON MAP ***/
+
       var healthCount = 0;
       while (healthCount < 8) {
         var x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
@@ -21729,14 +21715,15 @@ var Hello = function (_React$Component) {
       }
       this.setMap(this.arr);
     }
+
+    /*** USE RANDOM WALK ALGORITHM TO SET FLOOR ***/
+
   }, {
     key: 'randomWalk',
     value: function randomWalk(arr) {
       var x = this.state.squareNum / 2;
       var y = this.state.rowNum / 2;
       var count = 0;
-
-      /****USE RANDOM WALK ALGORITHM TO SET FLOOR****/
       while (count < 400) {
         var choice = Math.floor(Math.random() * (0 + 5 - 1)) + 0;
         if (arr[x][y] === 0) {
@@ -21766,6 +21753,9 @@ var Hello = function (_React$Component) {
         }
       }
     }
+
+    /*** MOVING THE PLAYER! TODO: BREAK THIS UP INTO SMALLER FUNCTIONS? ***/
+
   }, {
     key: 'movePlayer',
     value: function movePlayer(e) {
@@ -21780,7 +21770,6 @@ var Hello = function (_React$Component) {
           }
         }
       }
-      /***MOVING THE PLAYER!****/
       if (e.key === 'ArrowUp') {
         if (this.arr[x - 1][y] === 0) {
           return;
@@ -21802,10 +21791,15 @@ var Hello = function (_React$Component) {
             this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x - 1][y] = 4;
           } else if (this.arr[x - 1][y] === 7) {
-            this.arr[x - 1][y] = 7;
-            this.arr = [];
-            this.setState({ gameLevel: this.state.gameLevel + 1 });
-            this.set2DArray();
+            if (this.state.gameLevel < 5) {
+              this.arr[x - 1][y] = 7;
+              this.arr = [];
+              this.setState({ gameLevel: this.state.gameLevel + 1 });
+              this.set2DArray();
+            } else {
+              this.setState(initialState);
+              this.set2DArray();
+            }
           }
         }
         this.setMap(this.arr);
@@ -21831,10 +21825,15 @@ var Hello = function (_React$Component) {
             this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x + 1][y] = 4;
           } else if (this.arr[x + 1][y] === 7) {
-            this.arr[x - 1][y] = 7;
-            this.arr = [];
-            this.setState({ gameLevel: this.state.gameLevel + 1 });
-            this.set2DArray();
+            if (this.state.gameLevel < 5) {
+              this.arr[x - 1][y] = 7;
+              this.arr = [];
+              this.setState({ gameLevel: this.state.gameLevel + 1 });
+              this.set2DArray();
+            } else {
+              this.setState(initialState);
+              this.set2DArray();
+            }
           }
         }
         this.setMap(this.arr);
@@ -21860,10 +21859,15 @@ var Hello = function (_React$Component) {
             this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x][y + 1] = 4;
           } else if (this.arr[x][y + 1] === 7) {
-            this.arr[x - 1][y] = 7;
-            this.arr = [];
-            this.setState({ gameLevel: this.state.gameLevel + 1 });
-            this.set2DArray();
+            if (this.state.gameLevel < 5) {
+              this.arr[x - 1][y] = 7;
+              this.arr = [];
+              this.setState({ gameLevel: this.state.gameLevel + 1 });
+              this.set2DArray();
+            } else {
+              this.setState(initialState);
+              this.set2DArray();
+            }
           }
         }
         this.setMap(this.arr);
@@ -21889,10 +21893,15 @@ var Hello = function (_React$Component) {
             this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x][y - 1] = 4;
           } else if (this.arr[x][y - 1] === 7) {
-            this.arr[x - 1][y] = 7;
-            this.arr = [];
-            this.setState({ gameLevel: this.state.gameLevel + 1 });
-            this.set2DArray();
+            if (this.state.gameLevel < 5) {
+              this.arr[x - 1][y] = 7;
+              this.arr = [];
+              this.setState({ gameLevel: this.state.gameLevel + 1 });
+              this.set2DArray();
+            } else {
+              this.setState(initialState);
+              this.set2DArray();
+            }
           }
         }
         this.setMap(this.arr);
@@ -21931,10 +21940,12 @@ var Hello = function (_React$Component) {
     value: function resetEnemyHealth() {
       this.setState({ enemyHealth: 150 });
     }
+
+    /*** RESETTING MAP BASED ON PLAYER LOAD OR INITIAL RENDER ***/
+
   }, {
     key: 'setMap',
     value: function setMap(arr) {
-      /**RESETTING MAP BASED ON PLAYER LOAD OR INITIAL RENDER**/
       var squares = [];
       var rows = [];
       var flatArr = [].concat.apply([], arr);
@@ -22015,4 +22026,4 @@ var Hello = function (_React$Component) {
 
 _reactDom2.default.render(_react2.default.createElement(Hello, null), document.getElementById("app"));
 
-},{"./components/row":181,"./components/square":182,"mousetrap":24,"react":178,"react-dom":27}]},{},[179,180,181,182,183]);
+},{"./components/row":180,"./components/square":181,"mousetrap":24,"react":178,"react-dom":27}]},{},[179,180,181,182]);
