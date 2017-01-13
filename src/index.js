@@ -337,18 +337,15 @@ class Hello extends React.Component{
  }
   enemyAttack(){
    this.setState({health: this.state.health - this.state.enemyDamage})
-   console.log(this.state.enemyDamage)
-
   }
   playerAttack(){
    this.setState({enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage})
-   console.log(this.state.enemyHealth)
   }
   resetEnemyHealth(){
     this.setState({enemyHealth: 150})
   }
 
-  /*** RESETTING MAP BASED ON PLAYER LOAD OR INITIAL RENDER ***/
+  /*** SETTING MAP BASED ON PLAYER MOVEMENT/ACTIONS AND INITIAL GAME RENDER ***/
 
   setMap(arr){
     let squares = [];
