@@ -21604,7 +21604,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /*** DECLARE INITIALSTATE FOR EASY RESET ***/
 
-var initialState = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nun-chucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, weaponLevel: 0 };
+var initialState = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nunchucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }, { weapon: 'BFG', damage: 100 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, bossDamage: Math.floor(Math.random() * (30 - 25 + 1)) + 25, weaponLevel: 0 };
 
 var Hello = function (_React$Component) {
   _inherits(Hello, _React$Component);
@@ -21624,6 +21624,10 @@ var Hello = function (_React$Component) {
     _this.enemyAttack = _this.enemyAttack.bind(_this);
     _this.playerAttack = _this.playerAttack.bind(_this);
     _this.resetEnemyHealth = _this.resetEnemyHealth.bind(_this);
+    _this.bossAttack = _this.bossAttack.bind(_this);
+    _this.playerAttackBoss = _this.playerAttackBoss.bind(_this);
+    _this.bossCombat = _this.bossCombat.bind(_this);
+
     return _this;
   }
 
@@ -21704,13 +21708,28 @@ var Hello = function (_React$Component) {
           player++;
         }
       }
-      var door = 0;
-      while (door < 1) {
-        var _x4 = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-        var _y4 = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-        if (this.arr[_x4][_y4] === 1) {
-          this.arr[_x4][_y4] = 7;
-          door++;
+
+      if (this.state.gameLevel < 4) {
+        var door = 0;
+        while (door < 1) {
+          var _x4 = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+          var _y4 = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+          if (this.arr[_x4][_y4] === 1) {
+            this.arr[_x4][_y4] = 7;
+            door++;
+          }
+        }
+      }
+
+      if (this.state.gameLevel === 4) {
+        var boss = 0;
+        while (boss < 1) {
+          var _x5 = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+          var _y5 = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+          if (this.arr[_x5][_y5] === 1) {
+            this.arr[_x5][_y5] = 8;
+            boss++;
+          }
         }
       }
       this.setMap(this.arr);
@@ -21791,12 +21810,20 @@ var Hello = function (_React$Component) {
             this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x - 1][y] = 4;
           } else if (this.arr[x - 1][y] === 7) {
-            if (this.state.gameLevel < 5) {
+            if (this.state.gameLevel < 4) {
               this.arr[x - 1][y] = 7;
               this.arr = [];
               this.setState({ gameLevel: this.state.gameLevel + 1 });
               this.set2DArray();
-            } else {
+            }
+          } else if (this.arr[x - 1][y] === 8) {
+            this.bossCombat();
+            console.log(this.state.bossHealth);
+            console.log(this.state.health);
+            if (this.state.bossHealth <= 0 && this.state.health > 0) {
+              this.setState(initialState);
+              this.set2DArray();
+            } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
               this.setState(initialState);
               this.set2DArray();
             }
@@ -21825,12 +21852,20 @@ var Hello = function (_React$Component) {
             this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x + 1][y] = 4;
           } else if (this.arr[x + 1][y] === 7) {
-            if (this.state.gameLevel < 5) {
-              this.arr[x - 1][y] = 7;
+            if (this.state.gameLevel < 4) {
+              this.arr[x + 1][y] = 7;
               this.arr = [];
               this.setState({ gameLevel: this.state.gameLevel + 1 });
               this.set2DArray();
-            } else {
+            }
+          } else if (this.arr[x + 1][y] === 8) {
+            this.bossCombat();
+            console.log(this.state.bossHealth);
+            console.log(this.state.health);
+            if (this.state.bossHealth <= 0 && this.state.health > 0) {
+              this.setState(initialState);
+              this.set2DArray();
+            } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
               this.setState(initialState);
               this.set2DArray();
             }
@@ -21859,12 +21894,20 @@ var Hello = function (_React$Component) {
             this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x][y + 1] = 4;
           } else if (this.arr[x][y + 1] === 7) {
-            if (this.state.gameLevel < 5) {
-              this.arr[x - 1][y] = 7;
+            if (this.state.gameLevel < 4) {
+              this.arr[x][y + 1] = 7;
               this.arr = [];
               this.setState({ gameLevel: this.state.gameLevel + 1 });
               this.set2DArray();
-            } else {
+            }
+          } else if (this.arr[x][y + 1] === 8) {
+            this.bossCombat();
+            console.log(this.state.bossHealth);
+            console.log(this.state.health);
+            if (this.state.bossHealth <= 0 && this.state.health > 0) {
+              this.setState(initialState);
+              this.set2DArray();
+            } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
               this.setState(initialState);
               this.set2DArray();
             }
@@ -21893,12 +21936,20 @@ var Hello = function (_React$Component) {
             this.setState({ weaponLevel: this.state.weaponLevel + 1 });
             this.arr[x][y - 1] = 4;
           } else if (this.arr[x][y - 1] === 7) {
-            if (this.state.gameLevel < 5) {
-              this.arr[x - 1][y] = 7;
+            if (this.state.gameLevel < 4) {
+              this.arr[x][y - 1] = 7;
               this.arr = [];
               this.setState({ gameLevel: this.state.gameLevel + 1 });
               this.set2DArray();
-            } else {
+            }
+          } else if (this.arr[x][y - 1] === 8) {
+            this.bossCombat();
+            console.log(this.state.bossHealth);
+            console.log(this.state.health);
+            if (this.state.bossHealth <= 0 && this.state.health > 0) {
+              this.setState(initialState);
+              this.set2DArray();
+            } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
               this.setState(initialState);
               this.set2DArray();
             }
@@ -21922,26 +21973,83 @@ var Hello = function (_React$Component) {
           playerTurn++;
         }
       }
+      if (this.state.enemyHealth <= 0) {
+        this.setState({ playerXP: this.state.playerXP + 20 });
+      }
+      if (this.state.health <= 0) {
+        this.setState(initialState);
+        this.set2DArray(this.arr);
+      }
+      if (this.state.playerXP === 40) {
+        this.setState({ playerLevel: 2 });
+      }
+      if (this.state.playerXP === 80) {
+        this.setState({ playerLevel: 3 });
+      }
+      if (this.state.playerXP === 100) {
+        this.setState({ playerLevel: 4 });
+      }
+    }
+  }, {
+    key: 'bossCombat',
+    value: function bossCombat() {
+      var playerTurn = 1;
+      var bossTurn = 0;
+      while (this.state.health > 0 && this.state.bossHealth > 0) {
+        if (playerTurn > bossTurn) {
+          this.playerAttackBoss();
+          bossTurn++;
+        }
+        if (bossTurn === playerTurn) {
+          this.bossAttack();
+          this.setState({ bossDamage: Math.floor(Math.random() * (20 - 15 + 1)) + 15 });
+          playerTurn++;
+        }
+      }
     }
   }, {
     key: 'enemyAttack',
     value: function enemyAttack() {
       this.setState({ health: this.state.health - this.state.enemyDamage });
-      console.log(this.state.enemyDamage);
     }
   }, {
     key: 'playerAttack',
     value: function playerAttack() {
-      this.setState({ enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage });
-      console.log(this.state.enemyHealth);
+      if (this.state.playerLevel === 1) {
+        this.setState({ enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage });
+        console.log(this.state.enemyHealth);
+      } else if (this.state.playerLevel === 2) {
+        this.setState({ enemyHealth: this.state.enemyHealth - (this.state.weapons[this.state.weaponLevel].damage + 10) });
+      } else if (this.state.playerLevel === 3) {
+        this.setState({ enemyHealth: this.state.enemyHealth - (this.state.weapons[this.state.weaponLevel].damage + 20) });
+      } else if (this.state.playerLevel === 4) {
+        this.setState({ enemyHealth: this.state.enemyHealth - (this.state.weapons[this.state.weaponLevel].damage + 30) });
+      }
     }
   }, {
     key: 'resetEnemyHealth',
     value: function resetEnemyHealth() {
       this.setState({ enemyHealth: 150 });
     }
-
-    /*** RESETTING MAP BASED ON PLAYER LOAD OR INITIAL RENDER ***/
+  }, {
+    key: 'bossAttack',
+    value: function bossAttack() {
+      this.setState({ health: this.state.health - this.state.bossDamage });
+    }
+  }, {
+    key: 'playerAttackBoss',
+    value: function playerAttackBoss() {
+      if (this.state.playerLevel === 1) {
+        this.setState({ bossHealth: this.state.bossHealth - this.state.weapons[this.state.weaponLevel].damage });
+      } else if (this.state.playerLevel === 2) {
+        this.setState({ bossHealth: this.state.bossHealth - (this.state.weapons[this.state.weaponLevel].damage + 10) });
+      } else if (this.state.playerLevel === 3) {
+        this.setState({ bossHealth: this.state.bossHealth - (this.state.weapons[this.state.weaponLevel].damage + 20) });
+      } else if (this.state.playerLevel === 4) {
+        this.setState({ bossHealth: this.state.bossHealth - (this.state.weapons[this.state.weaponLevel].damage + 30) });
+      }
+    }
+    /*** SETTING MAP BASED ON PLAYER MOVEMENT/ACTIONS AND INITIAL GAME RENDER ***/
 
   }, {
     key: 'setMap',
@@ -21958,8 +22066,10 @@ var Hello = function (_React$Component) {
           squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'enemy' }));
         } else if (flatArr[i] === 6) {
           squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'weapon' }));
-        } else if (flatArr[i] === 7) {
+        } else if (flatArr[i] === 7 && this.state.gameLevel <= 3) {
           squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'door' }));
+        } else if (flatArr[i] === 8 && this.state.gameLevel === 4) {
+          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'boss' }));
         } else if (flatArr[i] === 0) {
           squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'wall' }));
         } else if (flatArr[i] === 1) {
@@ -21983,7 +22093,7 @@ var Hello = function (_React$Component) {
         _react2.default.createElement(
           'h3',
           null,
-          'Game Level:',
+          'Game Level: ',
           this.state.gameLevel
         ),
         _react2.default.createElement(

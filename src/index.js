@@ -6,7 +6,7 @@ import Mousetrap from 'mousetrap';
 
 /*** DECLARE INITIALSTATE FOR EASY RESET ***/
 
-const initialState = {squareNum: 26, rowNum: 26, map: [], health: 200, weapons:[{weapon: 'nun-chucks', damage: 10}, {weapon: 'sword', damage: 20}, {weapon: 'AK-47', damage: 40}, {weapon: 'Bazooka', damage: 60}], playerLevel: 1, gameLevel: 1, enemyHealth: 150, enemyDamage: Math.floor(Math.random()*(9-6+1))+6, playerXP: 0, weaponLevel: 0};
+const initialState = {squareNum: 26, rowNum: 26, map: [], health: 200, weapons:[{weapon: 'nunchucks', damage: 10}, {weapon: 'sword', damage: 20}, {weapon: 'AK-47', damage: 40}, {weapon: 'Bazooka', damage: 60}, {weapon: 'BFG', damage: 100}], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450,  enemyDamage: Math.floor(Math.random()*(9-6+1))+6, playerXP: 0, bossDamage: Math.floor(Math.random()*(30-25+1))+25,  weaponLevel: 0};
 
 class Hello extends React.Component{
   constructor(props){
@@ -21,6 +21,10 @@ class Hello extends React.Component{
     this.enemyAttack = this.enemyAttack.bind(this);
     this.playerAttack = this.playerAttack.bind(this);
     this.resetEnemyHealth = this.resetEnemyHealth.bind(this);
+    this.bossAttack = this.bossAttack.bind(this);
+    this.playerAttackBoss = this.playerAttackBoss.bind(this);
+    this.bossCombat = this.bossCombat.bind(this);
+
   }
 
   /*** GENERATE INITIAL 2D ARRAY ***/
@@ -92,13 +96,28 @@ class Hello extends React.Component{
         player++;
       }
     }
-    let door = 0;
-    while(door < 1){
-      let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
-      if(this.arr[x][y]===1){
-        this.arr[x][y]=7;
-        door++;
+
+    if(this.state.gameLevel < 4){
+      let door = 0;
+      while(door < 1){
+        let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+        let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+        if(this.arr[x][y]===1){
+          this.arr[x][y]=7;
+          door++;
+        }
+      }
+    }
+
+    if(this.state.gameLevel === 4){
+      let boss = 0;
+      while(boss < 1){
+        let x = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+        let y = Math.floor(Math.random() * (0 + 23 - 1)) + 0;
+        if(this.arr[x][y]===1){
+          this.arr[x][y]=8;
+          boss++;
+        }
       }
     }
     this.setMap(this.arr);
@@ -187,16 +206,25 @@ class Hello extends React.Component{
          this.arr[x-1][y]=4;
        }
        else if(this.arr[x-1][y]===7){
-         if(this.state.gameLevel < 5){
+         if(this.state.gameLevel < 4){
            this.arr[x-1][y]=7;
            this.arr = [];
            this.setState({gameLevel: this.state.gameLevel+1})
            this.set2DArray();
          }
-         else{
+       }
+       else if(this.arr[x-1][y]===8){
+         this.bossCombat();
+         console.log(this.state.bossHealth);
+         console.log(this.state.health);
+         if(this.state.bossHealth <= 0 && this.state.health > 0){
            this.setState(initialState)
            this.set2DArray();
          }
+        else if(this.state.bossHealth > 0 && this.state.health <= 0){
+          this.setState(initialState)
+          this.set2DArray();
+        }
        }
      }
      this.setMap(this.arr);
@@ -226,16 +254,25 @@ class Hello extends React.Component{
         this.arr[x+1][y]=4;
       }
       else if(this.arr[x+1][y]===7){
-        if(this.state.gameLevel < 5){
-          this.arr[x-1][y]=7;
+        if(this.state.gameLevel < 4){
+          this.arr[x+1][y]=7;
           this.arr = [];
           this.setState({gameLevel: this.state.gameLevel+1})
           this.set2DArray();
         }
-        else{
+      }
+      else if(this.arr[x+1][y]===8){
+        this.bossCombat();
+        console.log(this.state.bossHealth);
+        console.log(this.state.health);
+        if(this.state.bossHealth <= 0 && this.state.health > 0){
           this.setState(initialState)
           this.set2DArray();
         }
+       else if(this.state.bossHealth > 0 && this.state.health <= 0){
+         this.setState(initialState)
+         this.set2DArray();
+       }
       }
     }
     this.setMap(this.arr);
@@ -265,16 +302,25 @@ class Hello extends React.Component{
         this.arr[x][y+1]=4;
       }
       else if(this.arr[x][y+1]===7){
-        if(this.state.gameLevel < 5){
-          this.arr[x-1][y]=7;
+        if(this.state.gameLevel < 4){
+          this.arr[x][y+1]=7;
           this.arr = [];
           this.setState({gameLevel: this.state.gameLevel+1})
           this.set2DArray();
         }
-        else{
+      }
+      else if(this.arr[x][y+1]===8){
+        this.bossCombat();
+        console.log(this.state.bossHealth);
+        console.log(this.state.health);
+        if(this.state.bossHealth <= 0 && this.state.health > 0){
           this.setState(initialState)
           this.set2DArray();
         }
+       else if(this.state.bossHealth > 0 && this.state.health <= 0){
+         this.setState(initialState)
+         this.set2DArray();
+       }
       }
     }
     this.setMap(this.arr);
@@ -304,16 +350,25 @@ class Hello extends React.Component{
         this.arr[x][y-1]=4;
       }
       else if(this.arr[x][y-1]===7){
-        if(this.state.gameLevel < 5){
-          this.arr[x-1][y]=7;
+        if(this.state.gameLevel < 4){
+          this.arr[x][y-1]=7;
           this.arr = [];
           this.setState({gameLevel: this.state.gameLevel+1})
           this.set2DArray();
         }
-        else{
+      }
+      else if(this.arr[x][y-1]===8){
+        this.bossCombat();
+        console.log(this.state.bossHealth);
+        console.log(this.state.health);
+        if(this.state.bossHealth <= 0 && this.state.health > 0){
           this.setState(initialState)
           this.set2DArray();
         }
+       else if(this.state.bossHealth > 0 && this.state.health <= 0){
+         this.setState(initialState)
+         this.set2DArray();
+       }
       }
     }
     this.setMap(this.arr);
@@ -327,24 +382,83 @@ class Hello extends React.Component{
        this.playerAttack();
        enemyTurn++;
      }
+
      else if(enemyTurn === playerTurn){
        this.enemyAttack();
        this.setState({enemyDamage: Math.floor(Math.random()*(8-6+1))+6})
        playerTurn++;
      }
    }
-
- }
+   if(this.state.enemyHealth <=0){
+       this.setState({playerXP: this.state.playerXP+20})
+     }
+   if(this.state.health <= 0){
+     this.setState(initialState)
+     this.set2DArray(this.arr);
+   }
+   if(this.state.playerXP === 40){
+       this.setState({playerLevel: 2})
+     }
+   if(this.state.playerXP === 80){
+       this.setState({playerLevel: 3})
+     }
+   if(this.state.playerXP === 100){
+       this.setState({playerLevel: 4})
+     }
+   }
+   bossCombat(){
+     let playerTurn = 1;
+     let bossTurn = 0;
+     while(this.state.health > 0 && this.state.bossHealth > 0){
+       if(playerTurn > bossTurn){
+         this.playerAttackBoss();
+         bossTurn++;
+       }
+       if(bossTurn === playerTurn){
+         this.bossAttack();
+         this.setState({bossDamage: Math.floor(Math.random()*(20-15+1))+15})
+         playerTurn++;
+       }
+     }
+   }
   enemyAttack(){
    this.setState({health: this.state.health - this.state.enemyDamage})
   }
   playerAttack(){
-   this.setState({enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage})
+   if(this.state.playerLevel === 1){
+        this.setState({enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage})
+        console.log(this.state.enemyHealth)
+   }
+   else if(this.state.playerLevel === 2){
+             this.setState({enemyHealth: this.state.enemyHealth -  (this.state.weapons[this.state.weaponLevel].damage + 10)})
+   }
+   else if(this.state.playerLevel === 3){
+             this.setState({enemyHealth: this.state.enemyHealth - (this.state.weapons[this.state.weaponLevel].damage+20)})
+   }
+   else if(this.state.playerLevel === 4){
+             this.setState({enemyHealth: this.state.enemyHealth - (this.state.weapons[this.state.weaponLevel].damage+30)})
+   }
   }
   resetEnemyHealth(){
     this.setState({enemyHealth: 150})
   }
-
+  bossAttack(){
+    this.setState({health: this.state.health - this.state.bossDamage})
+  }
+  playerAttackBoss(){
+    if(this.state.playerLevel === 1){
+         this.setState({bossHealth: this.state.bossHealth - this.state.weapons[this.state.weaponLevel].damage})
+    }
+    else if(this.state.playerLevel === 2){
+              this.setState({bossHealth: this.state.bossHealth -  (this.state.weapons[this.state.weaponLevel].damage + 10)})
+    }
+    else if(this.state.playerLevel === 3){
+              this.setState({bossHealth: this.state.bossHealth - (this.state.weapons[this.state.weaponLevel].damage+20)})
+    }
+    else if(this.state.playerLevel === 4){
+              this.setState({bossHealth: this.state.bossHealth - (this.state.weapons[this.state.weaponLevel].damage+30)})
+    }
+  }
   /*** SETTING MAP BASED ON PLAYER MOVEMENT/ACTIONS AND INITIAL GAME RENDER ***/
 
   setMap(arr){
@@ -356,7 +470,7 @@ class Hello extends React.Component{
         squares.push(<Square key = {i} class = "health"/>);
       }
       else if(flatArr[i] === 4){
-        squares.push(<Square key={i} class = "player"/>);
+        squares.push(<Square key = {i} class = "player"/>);
       }
       else if(flatArr[i] === 5){
         squares.push(<Square key = {i} class = "enemy"/>);
@@ -364,8 +478,11 @@ class Hello extends React.Component{
       else if(flatArr[i]===6){
         squares.push(<Square key = {i} class = "weapon"/>);
       }
-      else if(flatArr[i] === 7){
+      else if(flatArr[i] === 7 && this.state.gameLevel <= 3){
         squares.push(<Square key = {i} class = "door"/>);
+      }
+      else if(flatArr[i] === 8 && this.state.gameLevel === 4){
+        squares.push(<Square key = {i} class = "boss"/>);
       }
       else if(flatArr[i] === 0){
         squares.push(<Square key = {i} class = "wall"/>);
@@ -385,7 +502,7 @@ class Hello extends React.Component{
   render(){
     return(
       <div>
-        <h3>Game Level:{this.state.gameLevel}</h3>
+        <h3>Game Level: {this.state.gameLevel}</h3>
         <h3>Player Experience: {this.state.playerXP}</h3>
         <h3>Player Level: {this.state.playerLevel}</h3>
         <h3>Player Health: {this.state.health}</h3>
