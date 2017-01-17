@@ -464,41 +464,96 @@ class Hello extends React.Component{
   setMap(arr){
     let squares = [];
     let rows = [];
-    let flatArr = [].concat.apply([], arr);
-    for(let i = 0; i < flatArr.length; i++){
-      if(flatArr[i] === 3){
-        squares.push(<Square key = {i} class = "health"/>);
-      }
-      else if(flatArr[i] === 4){
-        squares.push(<Square key = {i} class = "player"/>);
-      }
-      else if(flatArr[i] === 5){
-        squares.push(<Square key = {i} class = "enemy"/>);
-      }
-      else if(flatArr[i]===6){
-        squares.push(<Square key = {i} class = "weapon"/>);
-      }
-      else if(flatArr[i] === 7 && this.state.gameLevel <= 3){
-        squares.push(<Square key = {i} class = "door"/>);
-      }
-      else if(flatArr[i] === 8 && this.state.gameLevel === 4){
-        squares.push(<Square key = {i} class = "boss"/>);
-      }
-      else if(flatArr[i] === 0){
-        squares.push(<Square key = {i} class = "wall"/>);
-      }
-      else if(flatArr[i] === 1){
-        squares.push(<Square key = {i} class = "floor"/>);
-      }
-     if(squares.length === this.state.squareNum){
-       rows.push(<Row key = {i} squares = {squares}/>);
-       squares = [];
-       if(rows.length === this.state.rowNum){
-          this.setState({map: rows})
+    let size = this.state.squareNum * this.state.rowNum;
+    for(let i = 0; i < arr.length; i++){
+      for(let j = 0; j < arr[i].length; j++){
+        if(arr[i][j] === 3){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+            squares.push(<Square key = {size} class = "health"/>);
+            size--;
+          }
+          else {
+            squares.push(<Square key = {size} class = "health dark"/>);
+            size--;
+          }
         }
+        else if(arr[i][j] === 4){
+          squares.push(<Square  key = {size} class = "player"/>);
+          size--;
+        }
+        else if(arr[i][j] === 5){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+            squares.push(<Square  key = {size} class = "enemy"/>);
+            size--;
+          }
+          else{
+            squares.push(<Square  key = {size} class = "enemy dark"/>);
+            size--;
+          }
+        }
+        else if(arr[i][j] === 6){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+            squares.push(<Square  key = {size} class = "weapon"/>);
+            size--;
+          }
+          else{
+            squares.push(<Square  key = {size} class = "weapon dark"/>);
+            size--;
+          }
+        }
+        else if(arr[i][j] === 7 && this.state.gameLevel <= 3){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+            squares.push(<Square  key = {size} class = "door"/>);
+            size--;
+          }
+          else{
+            squares.push(<Square  key = {size} class = "door dark"/>);
+            size--;
+          }
+        }
+        else if(arr[i][j] === 8 && this.state.gameLevel === 4){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+            squares.push(<Square key = {size} class = "boss"/>);
+            size--;
+          }
+          else{
+            squares.push(<Square  key = {size} class = "boss dark"/>);
+            size--;
+          }
+
+        }
+        else if(arr[i][j] === 0){
+          if(i == 0 || j== 0 || i ==26 || j ==26 ){
+            squares.push(<Square key = {size} class = "wall"/>);
+            size--;
+          }
+          else{
+            squares.push(<Square key = {size} class = "wall dark"/>);
+            size--;
+          }
+
+        }
+        else if(arr[i][j] === 1){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+            squares.push(<Square  key={size} class = "floor"/>);
+            size--;
+          }
+          else {
+            squares.push(<Square  key={size} class = "floor dark"/>);
+            size--;
+          }
+        }
+        if(squares.length === this.state.squareNum){
+          rows.push(<Row  key = {size} squares = {squares}/>);
+          squares = [];
+          if(rows.length === this.state.rowNum){
+             this.setState({map: rows})
+           }
+         }
       }
     }
-  }
+
+    }
   render(){
     return(
       <div>

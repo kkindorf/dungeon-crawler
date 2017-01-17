@@ -22056,30 +22056,75 @@ var Hello = function (_React$Component) {
     value: function setMap(arr) {
       var squares = [];
       var rows = [];
-      var flatArr = [].concat.apply([], arr);
-      for (var i = 0; i < flatArr.length; i++) {
-        if (flatArr[i] === 3) {
-          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'health' }));
-        } else if (flatArr[i] === 4) {
-          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'player' }));
-        } else if (flatArr[i] === 5) {
-          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'enemy' }));
-        } else if (flatArr[i] === 6) {
-          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'weapon' }));
-        } else if (flatArr[i] === 7 && this.state.gameLevel <= 3) {
-          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'door' }));
-        } else if (flatArr[i] === 8 && this.state.gameLevel === 4) {
-          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'boss' }));
-        } else if (flatArr[i] === 0) {
-          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'wall' }));
-        } else if (flatArr[i] === 1) {
-          squares.push(_react2.default.createElement(_square2.default, { key: i, 'class': 'floor' }));
-        }
-        if (squares.length === this.state.squareNum) {
-          rows.push(_react2.default.createElement(_row2.default, { key: i, squares: squares }));
-          squares = [];
-          if (rows.length === this.state.rowNum) {
-            this.setState({ map: rows });
+      var size = this.state.squareNum * this.state.rowNum;
+      for (var i = 0; i < arr.length; i++) {
+        for (var j = 0; j < arr[i].length; j++) {
+          if (arr[i][j] === 3) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'health' }));
+              size--;
+            } else {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'health dark' }));
+              size--;
+            }
+          } else if (arr[i][j] === 4) {
+            squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'player' }));
+            size--;
+          } else if (arr[i][j] === 5) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'enemy' }));
+              size--;
+            } else {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'enemy dark' }));
+              size--;
+            }
+          } else if (arr[i][j] === 6) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'weapon' }));
+              size--;
+            } else {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'weapon dark' }));
+              size--;
+            }
+          } else if (arr[i][j] === 7 && this.state.gameLevel <= 3) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'door' }));
+              size--;
+            } else {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'door dark' }));
+              size--;
+            }
+          } else if (arr[i][j] === 8 && this.state.gameLevel === 4) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'boss' }));
+              size--;
+            } else {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'boss dark' }));
+              size--;
+            }
+          } else if (arr[i][j] === 0) {
+            if (i == 0 || j == 0 || i == 26 || j == 26) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'wall' }));
+              size--;
+            } else {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'wall dark' }));
+              size--;
+            }
+          } else if (arr[i][j] === 1) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'floor' }));
+              size--;
+            } else {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'floor dark' }));
+              size--;
+            }
+          }
+          if (squares.length === this.state.squareNum) {
+            rows.push(_react2.default.createElement(_row2.default, { key: size, squares: squares }));
+            squares = [];
+            if (rows.length === this.state.rowNum) {
+              this.setState({ map: rows });
+            }
           }
         }
       }
