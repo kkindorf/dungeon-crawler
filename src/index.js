@@ -523,16 +523,23 @@ class Hello extends React.Component{
 
         }
         else if(arr[i][j] === 0){
-          if(i == 0 || j== 0 || i ==26 || j ==26 ){
-            squares.push(<Square key = {size} class = "wall"/>);
-            size--;
-          }
-          else{
+          if(i == 0 || j== 0 || i ==25 || j ==25 ){
             squares.push(<Square key = {size} class = "wall dark"/>);
             size--;
           }
+         else{
+             if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+               squares.push(<Square key = {size} class = "wall"/>);
+               size--;
+             }
+             else{
+               squares.push(<Square key = {size} class = "wall dark"/>);
+               size--;
+             }
 
+            }
         }
+
         else if(arr[i][j] === 1){
           if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
             squares.push(<Square  key={size} class = "floor"/>);
