@@ -6,7 +6,7 @@ import Mousetrap from 'mousetrap';
 
 /*** DECLARE INITIALSTATE FOR EASY RESET ***/
 
-const initialState = {squareNum: 26, rowNum: 26, map: [], health: 200, weapons:[{weapon: 'nunchucks', damage: 10}, {weapon: 'sword', damage: 20}, {weapon: 'AK-47', damage: 40}, {weapon: 'Bazooka', damage: 60}, {weapon: 'BFG', damage: 100}], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450,  enemyDamage: Math.floor(Math.random()*(9-6+1))+6, playerXP: 0, bossDamage: Math.floor(Math.random()*(30-25+1))+25,  weaponLevel: 0};
+const initialState = {squareNum: 26, rowNum: 26, map: [], health: 200, weapons:[{weapon: 'nunchucks', damage: 10}, {weapon: 'sword', damage: 20}, {weapon: 'AK-47', damage: 40}, {weapon: 'Bazooka', damage: 60}, {weapon: 'BFG', damage: 100}], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450,  enemyDamage: Math.floor(Math.random()*(9-6+1))+6, playerXP: 0, bossDamage: Math.floor(Math.random()*(30-25+1))+25,  weaponLevel: 0, lightsOn: false};
 
 class Hello extends React.Component{
   constructor(props){
@@ -24,6 +24,8 @@ class Hello extends React.Component{
     this.bossAttack = this.bossAttack.bind(this);
     this.playerAttackBoss = this.playerAttackBoss.bind(this);
     this.bossCombat = this.bossCombat.bind(this);
+    this.turnOnLight = this.turnOnLight.bind(this);
+    this.swap = this.swap.bind(this);
 
   }
 
@@ -135,32 +137,32 @@ class Hello extends React.Component{
         arr[x][y] = 1;
         count++;
       }
-      if(choice === 0 && x > 23){
+      if(choice === 0 && x > 22){
         continue;
       }
-      else if(choice === 0 && x <= 23 && arr[x++][y]===0){
+      else if(choice === 0 && x <= 22 && arr[x++][y]===0){
         arr[x++][y] = 1;
         count++;
       }
-      else if(choice === 1 && x < 2){
+      else if(choice === 1 && x < 3){
         continue;
       }
-      else if(choice === 1 && x >= 2 && arr[x--][y]===0){
+      else if(choice === 1 && x >= 3 && arr[x--][y]===0){
         arr[x--][y] = 1;
         count++;
       }
 
-      else if(choice === 2 && y > 23){
+      else if(choice === 2 && y > 22){
         continue;
       }
-      else if(choice === 2 && y <= 23 && arr[x][y++]===0){
+      else if(choice === 2 && y <= 22 && arr[x][y++]===0){
         arr[x][y++] = 1;
         count++;
       }
-      else if(choice === 3 && y<2){
+      else if(choice === 3 && y<3){
         continue;
       }
-      else if(choice === 3 && y>=2 && arr[x][y--]===0){
+      else if(choice === 3 && y>=3 && arr[x][y--]===0){
         arr[x][y--] = 1;
         count++;
       }
@@ -227,7 +229,12 @@ class Hello extends React.Component{
         }
        }
      }
-     this.setMap(this.arr);
+     if(this.state.lightsOn){
+       this.turnOnLight();
+     }
+     else{
+       this.setMap(this.arr);
+     }
    }
    if(e.key === 'ArrowDown'){
      if(this.arr[x+1][y]===0){
@@ -275,7 +282,12 @@ class Hello extends React.Component{
        }
       }
     }
-    this.setMap(this.arr);
+    if(this.state.lightsOn){
+      this.turnOnLight();
+    }
+    else{
+      this.setMap(this.arr);
+    }
    }
    if(e.key === 'ArrowRight'){
      if(this.arr[x][y+1]===0){
@@ -323,7 +335,12 @@ class Hello extends React.Component{
        }
       }
     }
-    this.setMap(this.arr);
+    if(this.state.lightsOn){
+      this.turnOnLight();
+    }
+    else{
+      this.setMap(this.arr);
+    }
    }
    if(e.key === 'ArrowLeft'){
      if(this.arr[x][y-1]===0){
@@ -371,7 +388,12 @@ class Hello extends React.Component{
        }
       }
     }
-    this.setMap(this.arr);
+    if(this.state.lightsOn){
+      this.turnOnLight();
+    }
+    else{
+      this.setMap(this.arr);
+    }
    }
  }
  combat(){
@@ -462,13 +484,14 @@ class Hello extends React.Component{
   /*** SETTING MAP BASED ON PLAYER MOVEMENT/ACTIONS AND INITIAL GAME RENDER ***/
 
   setMap(arr){
+    this.setState({lightsOn: false})
     let squares = [];
     let rows = [];
     let size = this.state.squareNum * this.state.rowNum;
     for(let i = 0; i < arr.length; i++){
       for(let j = 0; j < arr[i].length; j++){
         if(arr[i][j] === 3){
-          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4 || arr[i-1][j-1] === 4 || arr[i+1][j+1] === 4 || arr[i+1][j-1] === 4 || arr[i-1][j+1] === 4 || arr[i-2][j] === 4 || arr[i+2][j]===4 || arr[i][j-2] === 4 || arr[i][j+2]===4 ||arr[i-2][j-2] === 4 || arr[i+2][j+2] === 4 || arr[i+2][j-2] === 4 || arr[i-2][j+2] === 4 || arr[i-1][j-2] === 4 || arr[i+1][j-2]===4 || arr[i+2][j-1]===4 || arr[i-2][j-1]===4 || arr[i+1][j+2]===4 || arr[i+2][j+1]===4 || arr[i-1][j+2]===4 || arr[i-2][j+1]===4){
             squares.push(<Square key = {size} class = "health"/>);
             size--;
           }
@@ -482,7 +505,7 @@ class Hello extends React.Component{
           size--;
         }
         else if(arr[i][j] === 5){
-          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4 || arr[i-1][j-1] === 4 || arr[i+1][j+1] === 4 || arr[i+1][j-1] === 4 || arr[i-1][j+1] === 4 || arr[i-2][j] === 4 || arr[i+2][j]===4 || arr[i][j-2] === 4 || arr[i][j+2]===4 ||arr[i-2][j-2] === 4 || arr[i+2][j+2] === 4 || arr[i+2][j-2] === 4 || arr[i-2][j+2] === 4 || arr[i-1][j-2] === 4 || arr[i+1][j-2]===4 || arr[i+2][j-1]===4 || arr[i-2][j-1]===4 || arr[i+1][j+2]===4 || arr[i+2][j+1]===4 || arr[i-1][j+2]===4 || arr[i-2][j+1]===4){
             squares.push(<Square  key = {size} class = "enemy"/>);
             size--;
           }
@@ -492,7 +515,7 @@ class Hello extends React.Component{
           }
         }
         else if(arr[i][j] === 6){
-          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4 || arr[i-1][j-1] === 4 || arr[i+1][j+1] === 4 || arr[i+1][j-1] === 4 || arr[i-1][j+1] === 4 || arr[i-2][j] === 4 || arr[i+2][j]===4 || arr[i][j-2] === 4 || arr[i][j+2]===4 ||arr[i-2][j-2] === 4 || arr[i+2][j+2] === 4 || arr[i+2][j-2] === 4 || arr[i-2][j+2] === 4 || arr[i-1][j-2] === 4 || arr[i+1][j-2]===4 || arr[i+2][j-1]===4 || arr[i-2][j-1]===4 || arr[i+1][j+2]===4 || arr[i+2][j+1]===4 || arr[i-1][j+2]===4 || arr[i-2][j+1]===4){
             squares.push(<Square  key = {size} class = "weapon"/>);
             size--;
           }
@@ -502,7 +525,7 @@ class Hello extends React.Component{
           }
         }
         else if(arr[i][j] === 7 && this.state.gameLevel <= 3){
-          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4 || arr[i-1][j-1] === 4 || arr[i+1][j+1] === 4 || arr[i+1][j-1] === 4 || arr[i-1][j+1] === 4 || arr[i-2][j] === 4 || arr[i+2][j]===4 || arr[i][j-2] === 4 || arr[i][j+2]===4 ||arr[i-2][j-2] === 4 || arr[i+2][j+2] === 4 || arr[i+2][j-2] === 4 || arr[i-2][j+2] === 4 || arr[i-1][j-2] === 4 || arr[i+1][j-2]===4 || arr[i+2][j-1]===4 || arr[i-2][j-1]===4 || arr[i+1][j+2]===4 || arr[i+2][j+1]===4 || arr[i-1][j+2]===4 || arr[i-2][j+1]===4){
             squares.push(<Square  key = {size} class = "door"/>);
             size--;
           }
@@ -512,7 +535,7 @@ class Hello extends React.Component{
           }
         }
         else if(arr[i][j] === 8 && this.state.gameLevel === 4){
-          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4 || arr[i-1][j-1] === 4 || arr[i+1][j+1] === 4 || arr[i+1][j-1] === 4 || arr[i-1][j+1] === 4 || arr[i-2][j] === 4 || arr[i+2][j]===4 || arr[i][j-2] === 4 || arr[i][j+2]===4 ||arr[i-2][j-2] === 4 || arr[i+2][j+2] === 4 || arr[i+2][j-2] === 4 || arr[i-2][j+2] === 4 || arr[i-1][j-2] === 4 || arr[i+1][j-2]===4 || arr[i+2][j-1]===4 || arr[i-2][j-1]===4 || arr[i+1][j+2]===4 || arr[i+2][j+1]===4 || arr[i-1][j+2]===4 || arr[i-2][j+1]===4){
             squares.push(<Square key = {size} class = "boss"/>);
             size--;
           }
@@ -523,12 +546,12 @@ class Hello extends React.Component{
 
         }
         else if(arr[i][j] === 0){
-          if(i == 0 || j== 0 || i ==25 || j ==25 ){
-            squares.push(<Square key = {size} class = "wall dark"/>);
+          if(i == 0 || j== 0 || i ==25 || j ==25 || i == 1 || j == 1|| i == 24 || j == 24){
+            squares.push(<Square key = {size} class = "border"/>);
             size--;
           }
          else{
-             if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
+             if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4 || arr[i-1][j-1] === 4 || arr[i+1][j+1] === 4 || arr[i+1][j-1] === 4 || arr[i-1][j+1] === 4 || arr[i-2][j] === 4 || arr[i+2][j]===4 || arr[i][j-2] === 4 || arr[i][j+2]===4 ||arr[i-2][j-2] === 4 || arr[i+2][j+2] === 4 || arr[i+2][j-2] === 4 || arr[i-2][j+2] === 4 || arr[i-1][j-2] === 4 || arr[i+1][j-2]===4 || arr[i+2][j-1]===4 || arr[i-2][j-1]===4 || arr[i+1][j+2]===4 || arr[i+2][j+1]===4 || arr[i-1][j+2]===4 || arr[i-2][j+1]===4){
                squares.push(<Square key = {size} class = "wall"/>);
                size--;
              }
@@ -541,14 +564,16 @@ class Hello extends React.Component{
         }
 
         else if(arr[i][j] === 1){
-          if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4){
-            squares.push(<Square  key={size} class = "floor"/>);
-            size--;
-          }
-          else {
-            squares.push(<Square  key={size} class = "floor dark"/>);
-            size--;
-          }
+            if(arr[i-1][j]===4 || arr[i+1][j]===4 || arr[i][j-1]===4 || arr[i][j+1] === 4 || arr[i-1][j-1] === 4 || arr[i+1][j+1] === 4 || arr[i+1][j-1] === 4 || arr[i-1][j+1] === 4 || arr[i-2][j] === 4 || arr[i+2][j]===4 || arr[i][j-2] === 4 || arr[i][j+2]===4 ||arr[i-2][j-2] === 4 || arr[i+2][j+2] === 4 || arr[i+2][j-2] === 4 || arr[i-2][j+2] === 4 || arr[i-1][j-2] === 4 || arr[i+1][j-2]===4 || arr[i+2][j-1]===4 || arr[i-2][j-1]===4 || arr[i+1][j+2]===4 || arr[i+2][j+1]===4 || arr[i-1][j+2]===4 || arr[i-2][j+1]===4) {
+              squares.push(<Square  key={size} class = "floor"/>);
+              size--;
+            }
+            else {
+              squares.push(<Square  key={size} class = "floor dark"/>);
+              size--;
+            }
+
+
         }
         if(squares.length === this.state.squareNum){
           rows.push(<Row  key = {size} squares = {squares}/>);
@@ -559,18 +584,81 @@ class Hello extends React.Component{
          }
       }
     }
-
+  }
+  turnOnLight(){
+    this.setState({lightsOn: true})
+    let squares = [];
+    let rows = [];
+    let size = this.state.squareNum * this.state.rowNum;
+    for(let i =0; i < this.arr.length; i++){
+      for(let j = 0; j < this.arr[i].length; j++){
+        if(this.arr[i][j] === 3){
+          squares.push(<Square key = {size} class = "health"/>);
+          size--;
+        }
+        else if(this.arr[i][j] === 4){
+          squares.push(<Square  key = {size} class = "player"/>);
+          size--;
+      }
+      else if(this.arr[i][j] === 5){
+        squares.push(<Square  key = {size} class = "enemy"/>);
+        size--;
+      }
+      else if(this.arr[i][j] === 6){
+        squares.push(<Square  key = {size} class = "weapon"/>);
+        size--;
+      }
+      else if(this.arr[i][j] === 7){
+        squares.push(<Square  key = {size} class = "door"/>);
+        size--;
+      }
+      else if(this.arr[i][j] === 8){
+        squares.push(<Square  key = {size} class = "boss"/>);
+        size--;
+      }
+      else if(this.arr[i][j] === 0){
+        if(i == 0 || j== 0 || i ==25 || j ==25 || i == 1 || j == 1|| i == 24 || j == 24){
+          squares.push(<Square key = {size} class = "border"/>);
+          size--;
+        }
+        else{
+          squares.push(<Square key = {size} class = "wall"/>);
+          size--;
+        }
+      }
+      else if(this.arr[i][j] === 1){
+        squares.push(<Square  key = {size} class = "floor"/>);
+        size--;
+      }
+      if(squares.length === this.state.squareNum){
+        rows.push(<Row  key = {size} squares = {squares}/>);
+        squares = [];
+        if(rows.length === this.state.rowNum){
+           this.setState({map: rows})
+         }
+       }
     }
+  }
+}
+swap(){
+  if(!this.state.lightsOn){
+    this.turnOnLight();
+  }
+  else{
+    this.setMap(this.arr);
+  }
+}
   render(){
     return(
       <div>
-        <h3>Game Level: {this.state.gameLevel}</h3>
-        <h3>Player Experience: {this.state.playerXP}</h3>
-        <h3>Player Level: {this.state.playerLevel}</h3>
-        <h3>Player Health: {this.state.health}</h3>
-        <h3>Weapon: {this.state.weapons[this.state.weaponLevel].weapon}</h3>
-        <h3>Attack: {this.state.weapons[this.state.weaponLevel].damage}</h3>
-        {this.state.map}
+      <h3>Game Level: {this.state.gameLevel}</h3>
+      <h3>Player Experience: {this.state.playerXP}</h3>
+      <h3>Player Level: {this.state.playerLevel}</h3>
+      <h3>Player Health: {this.state.health}</h3>
+      <h3>Weapon: {this.state.weapons[this.state.weaponLevel].weapon}</h3>
+      <h3>Attack: {this.state.weapons[this.state.weaponLevel].damage}</h3>
+      <button onClick={this.swap}>{this.state.lightsOn ? 'Toggle Dark':'Toggle Light'}</button>
+      {this.state.map}
       </div>
     )
   }

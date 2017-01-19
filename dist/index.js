@@ -21604,7 +21604,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /*** DECLARE INITIALSTATE FOR EASY RESET ***/
 
-var initialState = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nunchucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }, { weapon: 'BFG', damage: 100 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, bossDamage: Math.floor(Math.random() * (30 - 25 + 1)) + 25, weaponLevel: 0 };
+var initialState = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nunchucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }, { weapon: 'BFG', damage: 100 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, bossDamage: Math.floor(Math.random() * (30 - 25 + 1)) + 25, weaponLevel: 0, lightsOn: false };
 
 var Hello = function (_React$Component) {
   _inherits(Hello, _React$Component);
@@ -21627,6 +21627,8 @@ var Hello = function (_React$Component) {
     _this.bossAttack = _this.bossAttack.bind(_this);
     _this.playerAttackBoss = _this.playerAttackBoss.bind(_this);
     _this.bossCombat = _this.bossCombat.bind(_this);
+    _this.turnOnLight = _this.turnOnLight.bind(_this);
+    _this.swap = _this.swap.bind(_this);
 
     return _this;
   }
@@ -21749,24 +21751,24 @@ var Hello = function (_React$Component) {
           arr[x][y] = 1;
           count++;
         }
-        if (choice === 0 && x > 23) {
+        if (choice === 0 && x > 22) {
           continue;
-        } else if (choice === 0 && x <= 23 && arr[x++][y] === 0) {
+        } else if (choice === 0 && x <= 22 && arr[x++][y] === 0) {
           arr[x++][y] = 1;
           count++;
-        } else if (choice === 1 && x < 2) {
+        } else if (choice === 1 && x < 3) {
           continue;
-        } else if (choice === 1 && x >= 2 && arr[x--][y] === 0) {
+        } else if (choice === 1 && x >= 3 && arr[x--][y] === 0) {
           arr[x--][y] = 1;
           count++;
-        } else if (choice === 2 && y > 23) {
+        } else if (choice === 2 && y > 22) {
           continue;
-        } else if (choice === 2 && y <= 23 && arr[x][y++] === 0) {
+        } else if (choice === 2 && y <= 22 && arr[x][y++] === 0) {
           arr[x][y++] = 1;
           count++;
-        } else if (choice === 3 && y < 2) {
+        } else if (choice === 3 && y < 3) {
           continue;
-        } else if (choice === 3 && y >= 2 && arr[x][y--] === 0) {
+        } else if (choice === 3 && y >= 3 && arr[x][y--] === 0) {
           arr[x][y--] = 1;
           count++;
         }
@@ -21829,7 +21831,11 @@ var Hello = function (_React$Component) {
             }
           }
         }
-        this.setMap(this.arr);
+        if (this.state.lightsOn) {
+          this.turnOnLight();
+        } else {
+          this.setMap(this.arr);
+        }
       }
       if (e.key === 'ArrowDown') {
         if (this.arr[x + 1][y] === 0) {
@@ -21871,7 +21877,11 @@ var Hello = function (_React$Component) {
             }
           }
         }
-        this.setMap(this.arr);
+        if (this.state.lightsOn) {
+          this.turnOnLight();
+        } else {
+          this.setMap(this.arr);
+        }
       }
       if (e.key === 'ArrowRight') {
         if (this.arr[x][y + 1] === 0) {
@@ -21913,7 +21923,11 @@ var Hello = function (_React$Component) {
             }
           }
         }
-        this.setMap(this.arr);
+        if (this.state.lightsOn) {
+          this.turnOnLight();
+        } else {
+          this.setMap(this.arr);
+        }
       }
       if (e.key === 'ArrowLeft') {
         if (this.arr[x][y - 1] === 0) {
@@ -21955,7 +21969,11 @@ var Hello = function (_React$Component) {
             }
           }
         }
-        this.setMap(this.arr);
+        if (this.state.lightsOn) {
+          this.turnOnLight();
+        } else {
+          this.setMap(this.arr);
+        }
       }
     }
   }, {
@@ -22054,13 +22072,14 @@ var Hello = function (_React$Component) {
   }, {
     key: 'setMap',
     value: function setMap(arr) {
+      this.setState({ lightsOn: false });
       var squares = [];
       var rows = [];
       var size = this.state.squareNum * this.state.rowNum;
       for (var i = 0; i < arr.length; i++) {
         for (var j = 0; j < arr[i].length; j++) {
           if (arr[i][j] === 3) {
-            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4 || arr[i - 1][j - 1] === 4 || arr[i + 1][j + 1] === 4 || arr[i + 1][j - 1] === 4 || arr[i - 1][j + 1] === 4 || arr[i - 2][j] === 4 || arr[i + 2][j] === 4 || arr[i][j - 2] === 4 || arr[i][j + 2] === 4 || arr[i - 2][j - 2] === 4 || arr[i + 2][j + 2] === 4 || arr[i + 2][j - 2] === 4 || arr[i - 2][j + 2] === 4 || arr[i - 1][j - 2] === 4 || arr[i + 1][j - 2] === 4 || arr[i + 2][j - 1] === 4 || arr[i - 2][j - 1] === 4 || arr[i + 1][j + 2] === 4 || arr[i + 2][j + 1] === 4 || arr[i - 1][j + 2] === 4 || arr[i - 2][j + 1] === 4) {
               squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'health' }));
               size--;
             } else {
@@ -22071,7 +22090,7 @@ var Hello = function (_React$Component) {
             squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'player' }));
             size--;
           } else if (arr[i][j] === 5) {
-            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4 || arr[i - 1][j - 1] === 4 || arr[i + 1][j + 1] === 4 || arr[i + 1][j - 1] === 4 || arr[i - 1][j + 1] === 4 || arr[i - 2][j] === 4 || arr[i + 2][j] === 4 || arr[i][j - 2] === 4 || arr[i][j + 2] === 4 || arr[i - 2][j - 2] === 4 || arr[i + 2][j + 2] === 4 || arr[i + 2][j - 2] === 4 || arr[i - 2][j + 2] === 4 || arr[i - 1][j - 2] === 4 || arr[i + 1][j - 2] === 4 || arr[i + 2][j - 1] === 4 || arr[i - 2][j - 1] === 4 || arr[i + 1][j + 2] === 4 || arr[i + 2][j + 1] === 4 || arr[i - 1][j + 2] === 4 || arr[i - 2][j + 1] === 4) {
               squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'enemy' }));
               size--;
             } else {
@@ -22079,7 +22098,7 @@ var Hello = function (_React$Component) {
               size--;
             }
           } else if (arr[i][j] === 6) {
-            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4 || arr[i - 1][j - 1] === 4 || arr[i + 1][j + 1] === 4 || arr[i + 1][j - 1] === 4 || arr[i - 1][j + 1] === 4 || arr[i - 2][j] === 4 || arr[i + 2][j] === 4 || arr[i][j - 2] === 4 || arr[i][j + 2] === 4 || arr[i - 2][j - 2] === 4 || arr[i + 2][j + 2] === 4 || arr[i + 2][j - 2] === 4 || arr[i - 2][j + 2] === 4 || arr[i - 1][j - 2] === 4 || arr[i + 1][j - 2] === 4 || arr[i + 2][j - 1] === 4 || arr[i - 2][j - 1] === 4 || arr[i + 1][j + 2] === 4 || arr[i + 2][j + 1] === 4 || arr[i - 1][j + 2] === 4 || arr[i - 2][j + 1] === 4) {
               squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'weapon' }));
               size--;
             } else {
@@ -22087,7 +22106,7 @@ var Hello = function (_React$Component) {
               size--;
             }
           } else if (arr[i][j] === 7 && this.state.gameLevel <= 3) {
-            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4 || arr[i - 1][j - 1] === 4 || arr[i + 1][j + 1] === 4 || arr[i + 1][j - 1] === 4 || arr[i - 1][j + 1] === 4 || arr[i - 2][j] === 4 || arr[i + 2][j] === 4 || arr[i][j - 2] === 4 || arr[i][j + 2] === 4 || arr[i - 2][j - 2] === 4 || arr[i + 2][j + 2] === 4 || arr[i + 2][j - 2] === 4 || arr[i - 2][j + 2] === 4 || arr[i - 1][j - 2] === 4 || arr[i + 1][j - 2] === 4 || arr[i + 2][j - 1] === 4 || arr[i - 2][j - 1] === 4 || arr[i + 1][j + 2] === 4 || arr[i + 2][j + 1] === 4 || arr[i - 1][j + 2] === 4 || arr[i - 2][j + 1] === 4) {
               squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'door' }));
               size--;
             } else {
@@ -22095,7 +22114,7 @@ var Hello = function (_React$Component) {
               size--;
             }
           } else if (arr[i][j] === 8 && this.state.gameLevel === 4) {
-            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4 || arr[i - 1][j - 1] === 4 || arr[i + 1][j + 1] === 4 || arr[i + 1][j - 1] === 4 || arr[i - 1][j + 1] === 4 || arr[i - 2][j] === 4 || arr[i + 2][j] === 4 || arr[i][j - 2] === 4 || arr[i][j + 2] === 4 || arr[i - 2][j - 2] === 4 || arr[i + 2][j + 2] === 4 || arr[i + 2][j - 2] === 4 || arr[i - 2][j + 2] === 4 || arr[i - 1][j - 2] === 4 || arr[i + 1][j - 2] === 4 || arr[i + 2][j - 1] === 4 || arr[i - 2][j - 1] === 4 || arr[i + 1][j + 2] === 4 || arr[i + 2][j + 1] === 4 || arr[i - 1][j + 2] === 4 || arr[i - 2][j + 1] === 4) {
               squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'boss' }));
               size--;
             } else {
@@ -22103,11 +22122,11 @@ var Hello = function (_React$Component) {
               size--;
             }
           } else if (arr[i][j] === 0) {
-            if (i == 0 || j == 0 || i == 25 || j == 25) {
-              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'wall dark' }));
+            if (i == 0 || j == 0 || i == 25 || j == 25 || i == 1 || j == 1 || i == 24 || j == 24) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'border' }));
               size--;
             } else {
-              if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+              if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4 || arr[i - 1][j - 1] === 4 || arr[i + 1][j + 1] === 4 || arr[i + 1][j - 1] === 4 || arr[i - 1][j + 1] === 4 || arr[i - 2][j] === 4 || arr[i + 2][j] === 4 || arr[i][j - 2] === 4 || arr[i][j + 2] === 4 || arr[i - 2][j - 2] === 4 || arr[i + 2][j + 2] === 4 || arr[i + 2][j - 2] === 4 || arr[i - 2][j + 2] === 4 || arr[i - 1][j - 2] === 4 || arr[i + 1][j - 2] === 4 || arr[i + 2][j - 1] === 4 || arr[i - 2][j - 1] === 4 || arr[i + 1][j + 2] === 4 || arr[i + 2][j + 1] === 4 || arr[i - 1][j + 2] === 4 || arr[i - 2][j + 1] === 4) {
                 squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'wall' }));
                 size--;
               } else {
@@ -22116,7 +22135,7 @@ var Hello = function (_React$Component) {
               }
             }
           } else if (arr[i][j] === 1) {
-            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4) {
+            if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4 || arr[i - 1][j - 1] === 4 || arr[i + 1][j + 1] === 4 || arr[i + 1][j - 1] === 4 || arr[i - 1][j + 1] === 4 || arr[i - 2][j] === 4 || arr[i + 2][j] === 4 || arr[i][j - 2] === 4 || arr[i][j + 2] === 4 || arr[i - 2][j - 2] === 4 || arr[i + 2][j + 2] === 4 || arr[i + 2][j - 2] === 4 || arr[i - 2][j + 2] === 4 || arr[i - 1][j - 2] === 4 || arr[i + 1][j - 2] === 4 || arr[i + 2][j - 1] === 4 || arr[i - 2][j - 1] === 4 || arr[i + 1][j + 2] === 4 || arr[i + 2][j + 1] === 4 || arr[i - 1][j + 2] === 4 || arr[i - 2][j + 1] === 4) {
               squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'floor' }));
               size--;
             } else {
@@ -22132,6 +22151,64 @@ var Hello = function (_React$Component) {
             }
           }
         }
+      }
+    }
+  }, {
+    key: 'turnOnLight',
+    value: function turnOnLight() {
+      this.setState({ lightsOn: true });
+      var squares = [];
+      var rows = [];
+      var size = this.state.squareNum * this.state.rowNum;
+      for (var i = 0; i < this.arr.length; i++) {
+        for (var j = 0; j < this.arr[i].length; j++) {
+          if (this.arr[i][j] === 3) {
+            squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'health' }));
+            size--;
+          } else if (this.arr[i][j] === 4) {
+            squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'player' }));
+            size--;
+          } else if (this.arr[i][j] === 5) {
+            squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'enemy' }));
+            size--;
+          } else if (this.arr[i][j] === 6) {
+            squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'weapon' }));
+            size--;
+          } else if (this.arr[i][j] === 7) {
+            squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'door' }));
+            size--;
+          } else if (this.arr[i][j] === 8) {
+            squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'boss' }));
+            size--;
+          } else if (this.arr[i][j] === 0) {
+            if (i == 0 || j == 0 || i == 25 || j == 25 || i == 1 || j == 1 || i == 24 || j == 24) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'border' }));
+              size--;
+            } else {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'wall' }));
+              size--;
+            }
+          } else if (this.arr[i][j] === 1) {
+            squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'floor' }));
+            size--;
+          }
+          if (squares.length === this.state.squareNum) {
+            rows.push(_react2.default.createElement(_row2.default, { key: size, squares: squares }));
+            squares = [];
+            if (rows.length === this.state.rowNum) {
+              this.setState({ map: rows });
+            }
+          }
+        }
+      }
+    }
+  }, {
+    key: 'swap',
+    value: function swap() {
+      if (!this.state.lightsOn) {
+        this.turnOnLight();
+      } else {
+        this.setMap(this.arr);
       }
     }
   }, {
@@ -22175,6 +22252,11 @@ var Hello = function (_React$Component) {
           null,
           'Attack: ',
           this.state.weapons[this.state.weaponLevel].damage
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.swap },
+          this.state.lightsOn ? 'Toggle Dark' : 'Toggle Light'
         ),
         this.state.map
       );
