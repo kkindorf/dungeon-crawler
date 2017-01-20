@@ -224,14 +224,6 @@ class Hello extends React.Component{
          }
          else if(this.arr[x-1][y]===8){
            this.bossCombat();
-           console.log(this.state.bossHealth);
-           console.log(this.state.health);
-           if(this.state.bossHealth <= 0 && this.state.health > 0){
-             this.setState({showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose'});
-           }
-          else if(this.state.bossHealth > 0 && this.state.health <= 0){
-             this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
-          }
          }
        }
        if(this.state.lightsOn){
@@ -275,14 +267,7 @@ class Hello extends React.Component{
         }
         else if(this.arr[x+1][y]===8){
           this.bossCombat();
-          console.log(this.state.bossHealth);
-          console.log(this.state.health);
-          if(this.state.bossHealth <= 0 && this.state.health > 0){
-             this.setState({showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose'});
-          }
-         else if(this.state.bossHealth > 0 && this.state.health <= 0){
-             this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
-         }
+
         }
       }
       if(this.state.lightsOn){
@@ -326,14 +311,7 @@ class Hello extends React.Component{
         }
         else if(this.arr[x][y+1]===8){
           this.bossCombat();
-          console.log(this.state.bossHealth);
-          console.log(this.state.health);
-          if(this.state.bossHealth <= 0 && this.state.health > 0){
-             this.setState({showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose'});
-          }
-         else if(this.state.bossHealth > 0 && this.state.health <= 0){
-             this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
-         }
+
         }
       }
       if(this.state.lightsOn){
@@ -377,14 +355,7 @@ class Hello extends React.Component{
         }
         else if(this.arr[x][y-1]===8){
           this.bossCombat();
-          console.log(this.state.bossHealth);
-          console.log(this.state.health);
-          if(this.state.bossHealth <= 0 && this.state.health > 0){
-             this.setState({showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose'});
-          }
-         else if(this.state.bossHealth > 0 && this.state.health <= 0){
-             this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
-         }
+
         }
       }
       if(this.state.lightsOn){
@@ -414,8 +385,8 @@ class Hello extends React.Component{
        this.setState({playerXP: this.state.playerXP+20})
      }
    if(this.state.health <= 0){
-       this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
-
+     this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose', lightsOn: false, gameLevel: 1});
+     this.setMap(this.arr);
    }
    if(this.state.playerXP === 40){
        this.setState({playerLevel: 2})
@@ -441,14 +412,21 @@ class Hello extends React.Component{
          playerTurn++;
        }
      }
+     if(this.state.bossHealth <= 0 && this.state.health > 0){
+              this.setState({showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose', lightsOn: false, gameLevel: 1});
+              this.setMap(this.arr);
+     }
+    else if(this.state.bossHealth > 0 && this.state.health <= 0){
+             this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose', lightsOn: false, gameLevel: 1});
+             this.setMap(this.arr);
+    }
    }
   enemyAttack(){
    this.setState({health: this.state.health - this.state.enemyDamage})
   }
   playerAttack(){
    if(this.state.playerLevel === 1){
-        this.setState({enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage})
-        console.log(this.state.enemyHealth)
+        this.setState({enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage});
    }
    else if(this.state.playerLevel === 2){
              this.setState({enemyHealth: this.state.enemyHealth -  (this.state.weapons[this.state.weaponLevel].damage + 10)})
@@ -655,13 +633,15 @@ swap(){
 restartGame(){
   this.setState(initialState);
   this.set2DArray();
-  this.setMap(this.arr);
+
 }
   render(){
     return(
       <div className="wrapper">
         <h1>React Dungeon Crawler</h1>
+        <h2 className="instructions">Kill the Boss in Dungeon 4</h2>
         <div className="levels">
+
           <h3>Player Experience: {this.state.playerXP}</h3>
           <h3>Player Level: {this.state.playerLevel}</h3>
         </div>
