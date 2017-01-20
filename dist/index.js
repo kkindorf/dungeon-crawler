@@ -21604,7 +21604,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /*** DECLARE INITIALSTATE FOR EASY RESET ***/
 
-var initialState = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nunchucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }, { weapon: 'BFG', damage: 100 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, bossDamage: Math.floor(Math.random() * (30 - 25 + 1)) + 25, weaponLevel: 0, lightsOn: false };
+var initialState = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nunchucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }, { weapon: 'BFG', damage: 100 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, bossDamage: Math.floor(Math.random() * (30 - 25 + 1)) + 25, weaponLevel: 0, lightsOn: false, showMap: 'showMap', showWinOrLose: 'hideWinOrLose', win: false };
 
 var Hello = function (_React$Component) {
   _inherits(Hello, _React$Component);
@@ -21629,6 +21629,7 @@ var Hello = function (_React$Component) {
     _this.bossCombat = _this.bossCombat.bind(_this);
     _this.turnOnLight = _this.turnOnLight.bind(_this);
     _this.swap = _this.swap.bind(_this);
+    _this.restartGame = _this.restartGame.bind(_this);
 
     return _this;
   }
@@ -21734,7 +21735,11 @@ var Hello = function (_React$Component) {
           }
         }
       }
-      this.setMap(this.arr);
+      if (this.state.lightsOn) {
+        this.turnOnLight();
+      } else {
+        this.setMap(this.arr);
+      }
     }
 
     /*** USE RANDOM WALK ALGORITHM TO SET FLOOR ***/
@@ -21745,7 +21750,7 @@ var Hello = function (_React$Component) {
       var x = this.state.squareNum / 2;
       var y = this.state.rowNum / 2;
       var count = 0;
-      while (count < 400) {
+      while (count < 375) {
         var choice = Math.floor(Math.random() * (0 + 5 - 1)) + 0;
         if (arr[x][y] === 0) {
           arr[x][y] = 1;
@@ -21823,11 +21828,9 @@ var Hello = function (_React$Component) {
             console.log(this.state.bossHealth);
             console.log(this.state.health);
             if (this.state.bossHealth <= 0 && this.state.health > 0) {
-              this.setState(initialState);
-              this.set2DArray();
+              this.setState({ showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose' });
             } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
-              this.setState(initialState);
-              this.set2DArray();
+              this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
             }
           }
         }
@@ -21869,11 +21872,9 @@ var Hello = function (_React$Component) {
             console.log(this.state.bossHealth);
             console.log(this.state.health);
             if (this.state.bossHealth <= 0 && this.state.health > 0) {
-              this.setState(initialState);
-              this.set2DArray();
+              this.setState({ showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose' });
             } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
-              this.setState(initialState);
-              this.set2DArray();
+              this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
             }
           }
         }
@@ -21915,11 +21916,9 @@ var Hello = function (_React$Component) {
             console.log(this.state.bossHealth);
             console.log(this.state.health);
             if (this.state.bossHealth <= 0 && this.state.health > 0) {
-              this.setState(initialState);
-              this.set2DArray();
+              this.setState({ showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose' });
             } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
-              this.setState(initialState);
-              this.set2DArray();
+              this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
             }
           }
         }
@@ -21961,11 +21960,9 @@ var Hello = function (_React$Component) {
             console.log(this.state.bossHealth);
             console.log(this.state.health);
             if (this.state.bossHealth <= 0 && this.state.health > 0) {
-              this.setState(initialState);
-              this.set2DArray();
+              this.setState({ showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose' });
             } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
-              this.setState(initialState);
-              this.set2DArray();
+              this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
             }
           }
         }
@@ -21995,8 +21992,7 @@ var Hello = function (_React$Component) {
         this.setState({ playerXP: this.state.playerXP + 20 });
       }
       if (this.state.health <= 0) {
-        this.setState(initialState);
-        this.set2DArray(this.arr);
+        this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
       }
       if (this.state.playerXP === 40) {
         this.setState({ playerLevel: 2 });
@@ -22122,8 +22118,11 @@ var Hello = function (_React$Component) {
               size--;
             }
           } else if (arr[i][j] === 0) {
-            if (i == 0 || j == 0 || i == 25 || j == 25 || i == 1 || j == 1 || i == 24 || j == 24) {
+            if (i == 0 || j == 0 || i == 25 || j == 25) {
               squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'border' }));
+              size--;
+            } else if (i == 1 || j == 1 || i == 24 || j == 24) {
+              squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'wall dark' }));
               size--;
             } else {
               if (arr[i - 1][j] === 4 || arr[i + 1][j] === 4 || arr[i][j - 1] === 4 || arr[i][j + 1] === 4 || arr[i - 1][j - 1] === 4 || arr[i + 1][j + 1] === 4 || arr[i + 1][j - 1] === 4 || arr[i - 1][j + 1] === 4 || arr[i - 2][j] === 4 || arr[i + 2][j] === 4 || arr[i][j - 2] === 4 || arr[i][j + 2] === 4 || arr[i - 2][j - 2] === 4 || arr[i + 2][j + 2] === 4 || arr[i + 2][j - 2] === 4 || arr[i - 2][j + 2] === 4 || arr[i - 1][j - 2] === 4 || arr[i + 1][j - 2] === 4 || arr[i + 2][j - 1] === 4 || arr[i - 2][j - 1] === 4 || arr[i + 1][j + 2] === 4 || arr[i + 2][j + 1] === 4 || arr[i - 1][j + 2] === 4 || arr[i - 2][j + 1] === 4) {
@@ -22181,7 +22180,7 @@ var Hello = function (_React$Component) {
             squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'boss' }));
             size--;
           } else if (this.arr[i][j] === 0) {
-            if (i == 0 || j == 0 || i == 25 || j == 25 || i == 1 || j == 1 || i == 24 || j == 24) {
+            if (i == 0 || j == 0 || i == 25 || j == 25) {
               squares.push(_react2.default.createElement(_square2.default, { key: size, 'class': 'border' }));
               size--;
             } else {
@@ -22212,53 +22211,85 @@ var Hello = function (_React$Component) {
       }
     }
   }, {
+    key: 'restartGame',
+    value: function restartGame() {
+      this.setState(initialState);
+      this.set2DArray();
+      this.setMap(this.arr);
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
         'div',
-        null,
+        { className: 'wrapper' },
         _react2.default.createElement(
-          'h3',
+          'h1',
           null,
-          'Game Level: ',
-          this.state.gameLevel
+          'React Dungeon Crawler'
         ),
         _react2.default.createElement(
-          'h3',
-          null,
-          'Player Experience: ',
-          this.state.playerXP
+          'div',
+          { className: 'levels' },
+          _react2.default.createElement(
+            'h3',
+            null,
+            'Player Experience: ',
+            this.state.playerXP
+          ),
+          _react2.default.createElement(
+            'h3',
+            null,
+            'Player Level: ',
+            this.state.playerLevel
+          )
         ),
         _react2.default.createElement(
-          'h3',
-          null,
-          'Player Level: ',
-          this.state.playerLevel
+          'div',
+          { className: 'health-weapons' },
+          _react2.default.createElement(
+            'h3',
+            null,
+            'Player Health: ',
+            this.state.health
+          ),
+          _react2.default.createElement(
+            'h3',
+            null,
+            'Weapon: ',
+            this.state.weapons[this.state.weaponLevel].weapon
+          ),
+          _react2.default.createElement(
+            'h3',
+            null,
+            'Attack: ',
+            this.state.weapons[this.state.weaponLevel].damage
+          )
         ),
         _react2.default.createElement(
-          'h3',
-          null,
-          'Player Health: ',
-          this.state.health
+          'div',
+          { className: this.state.showMap },
+          _react2.default.createElement(
+            'button',
+            { className: 'btn', onClick: this.swap },
+            this.state.lightsOn ? 'Toggle Fog' : 'Toggle Light'
+          ),
+          this.state.map
         ),
         _react2.default.createElement(
-          'h3',
-          null,
-          'Weapon: ',
-          this.state.weapons[this.state.weaponLevel].weapon
-        ),
-        _react2.default.createElement(
-          'h3',
-          null,
-          'Attack: ',
-          this.state.weapons[this.state.weaponLevel].damage
-        ),
-        _react2.default.createElement(
-          'button',
-          { onClick: this.swap },
-          this.state.lightsOn ? 'Toggle Dark' : 'Toggle Light'
-        ),
-        this.state.map
+          'div',
+          { className: this.state.showWinOrLose },
+          _react2.default.createElement(
+            'h1',
+            null,
+            this.state.win ? 'YOU WON!' : 'YOU DIED!'
+          ),
+          _react2.default.createElement(
+            'button',
+            { className: 'btn', onClick: this.restartGame },
+            'Play Again?'
+          )
+        )
       );
     }
   }]);

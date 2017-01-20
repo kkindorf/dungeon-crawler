@@ -6,7 +6,7 @@ import Mousetrap from 'mousetrap';
 
 /*** DECLARE INITIALSTATE FOR EASY RESET ***/
 
-const initialState = {squareNum: 26, rowNum: 26, map: [], health: 200, weapons:[{weapon: 'nunchucks', damage: 10}, {weapon: 'sword', damage: 20}, {weapon: 'AK-47', damage: 40}, {weapon: 'Bazooka', damage: 60}, {weapon: 'BFG', damage: 100}], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450,  enemyDamage: Math.floor(Math.random()*(9-6+1))+6, playerXP: 0, bossDamage: Math.floor(Math.random()*(30-25+1))+25,  weaponLevel: 0, lightsOn: false};
+const initialState = {squareNum: 26, rowNum: 26, map: [], health: 200, weapons:[{weapon: 'nunchucks', damage: 10}, {weapon: 'sword', damage: 20}, {weapon: 'AK-47', damage: 40}, {weapon: 'Bazooka', damage: 60}, {weapon: 'BFG', damage: 100}], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450,  enemyDamage: Math.floor(Math.random()*(9-6+1))+6, playerXP: 0, bossDamage: Math.floor(Math.random()*(30-25+1))+25,  weaponLevel: 0, lightsOn: false, showMap: 'showMap', showWinOrLose: 'hideWinOrLose', win: false};
 
 class Hello extends React.Component{
   constructor(props){
@@ -26,6 +26,7 @@ class Hello extends React.Component{
     this.bossCombat = this.bossCombat.bind(this);
     this.turnOnLight = this.turnOnLight.bind(this);
     this.swap = this.swap.bind(this);
+    this.restartGame = this.restartGame.bind(this);
 
   }
 
@@ -122,7 +123,12 @@ class Hello extends React.Component{
         }
       }
     }
-    this.setMap(this.arr);
+    if(this.state.lightsOn){
+      this.turnOnLight();
+    }
+    else{
+      this.setMap(this.arr);
+    }
   }
 
   /*** USE RANDOM WALK ALGORITHM TO SET FLOOR ***/
@@ -131,7 +137,7 @@ class Hello extends React.Component{
     let x = this.state.squareNum / 2;
     let y = this.state.rowNum/ 2;
     let count = 0;
-    while(count < 400){
+    while(count < 375){
       let choice = Math.floor(Math.random() * (0 + 5 - 1)) + 0;
       if(arr[x][y] === 0){
         arr[x][y] = 1;
@@ -171,231 +177,224 @@ class Hello extends React.Component{
 
   /*** MOVING THE PLAYER! TODO: BREAK THIS UP INTO SMALLER FUNCTIONS? ***/
 
-  movePlayer(e) {
-    e.preventDefault();
-    let x;
-    let y;
-    for(let i =0; i < this.arr.length; i++){
-      for (let j = 0; j < this.arr[i].length; j++){
-        if(this.arr[i][j] === 4){
-          x = i;
-          y = j;
+
+    movePlayer(e) {
+      e.preventDefault();
+      let x;
+      let y;
+      for(let i =0; i < this.arr.length; i++){
+        for (let j = 0; j < this.arr[i].length; j++){
+          if(this.arr[i][j] === 4){
+            x = i;
+            y = j;
+          }
         }
       }
-    }
-    if(e.key === 'ArrowUp'){
-      if(this.arr[x-1][y]===0){
-        return;
-      }
-      if(this.arr[x][y]===4){
-        this.arr[x][y]=1;
-       if(this.arr[x-1][y]===1){
-         this.arr[x-1][y]=4;
-       }
-       else if(this.arr[x-1][y]===3){
-         this.setState({health: this.state.health+25})
-         this.arr[x-1][y]=4;
-       }
-       else if(this.arr[x-1][y]===5){
-         this.combat();
-         if(this.state.enemyHealth <=0 && this.state.health > 0){
+      if(e.key === 'ArrowUp'){
+        if(this.arr[x-1][y]===0){
+          return;
+        }
+        if(this.arr[x][y]===4){
+          this.arr[x][y]=1;
+         if(this.arr[x-1][y]===1){
            this.arr[x-1][y]=4;
-           this.resetEnemyHealth();
+         }
+         else if(this.arr[x-1][y]===3){
+           this.setState({health: this.state.health+25})
+           this.arr[x-1][y]=4;
+         }
+         else if(this.arr[x-1][y]===5){
+           this.combat();
+           if(this.state.enemyHealth <=0 && this.state.health > 0){
+             this.arr[x-1][y]=4;
+             this.resetEnemyHealth();
+           }
+         }
+         else if(this.arr[x-1][y]===6){
+           this.setState({weaponLevel: this.state.weaponLevel+1})
+           this.arr[x-1][y]=4;
+         }
+         else if(this.arr[x-1][y]===7){
+           if(this.state.gameLevel < 4){
+             this.arr[x-1][y]=7;
+             this.arr = [];
+             this.setState({gameLevel: this.state.gameLevel+1})
+             this.set2DArray();
+           }
+         }
+         else if(this.arr[x-1][y]===8){
+           this.bossCombat();
+           console.log(this.state.bossHealth);
+           console.log(this.state.health);
+           if(this.state.bossHealth <= 0 && this.state.health > 0){
+             this.setState({showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose'});
+           }
+          else if(this.state.bossHealth > 0 && this.state.health <= 0){
+             this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
+          }
          }
        }
-       else if(this.arr[x-1][y]===6){
-         this.setState({weaponLevel: this.state.weaponLevel+1})
-         this.arr[x-1][y]=4;
+       if(this.state.lightsOn){
+         this.turnOnLight();
        }
-       else if(this.arr[x-1][y]===7){
-         if(this.state.gameLevel < 4){
-           this.arr[x-1][y]=7;
-           this.arr = [];
-           this.setState({gameLevel: this.state.gameLevel+1})
-           this.set2DArray();
-         }
-       }
-       else if(this.arr[x-1][y]===8){
-         this.bossCombat();
-         console.log(this.state.bossHealth);
-         console.log(this.state.health);
-         if(this.state.bossHealth <= 0 && this.state.health > 0){
-           this.setState(initialState)
-           this.set2DArray();
-         }
-        else if(this.state.bossHealth > 0 && this.state.health <= 0){
-          this.setState(initialState)
-          this.set2DArray();
-        }
+       else{
+         this.setMap(this.arr);
        }
      }
-     if(this.state.lightsOn){
-       this.turnOnLight();
-     }
-     else{
-       this.setMap(this.arr);
-     }
-   }
-   if(e.key === 'ArrowDown'){
-     if(this.arr[x+1][y]===0){
-       return;
-     }
-     if(this.arr[x][y]===4){
-       this.arr[x][y]=1;
-      if(this.arr[x+1][y]===1){
-        this.arr[x+1][y]=4;
-      }
-      else if(this.arr[x+1][y]===3){
-        this.setState({health: this.state.health+25})
-        this.arr[x+1][y]=4;
-      }
-      else if(this.arr[x+1][y]===5){
-        this.combat();
-        if(this.state.enemyHealth <=0 && this.state.health >0){
+     if(e.key === 'ArrowDown'){
+       if(this.arr[x+1][y]===0){
+         return;
+       }
+       if(this.arr[x][y]===4){
+         this.arr[x][y]=1;
+        if(this.arr[x+1][y]===1){
           this.arr[x+1][y]=4;
-          this.resetEnemyHealth();
+        }
+        else if(this.arr[x+1][y]===3){
+          this.setState({health: this.state.health+25})
+          this.arr[x+1][y]=4;
+        }
+        else if(this.arr[x+1][y]===5){
+          this.combat();
+          if(this.state.enemyHealth <=0 && this.state.health >0){
+            this.arr[x+1][y]=4;
+            this.resetEnemyHealth();
+          }
+        }
+        else if(this.arr[x+1][y]===6){
+          this.setState({weaponLevel: this.state.weaponLevel+1})
+          this.arr[x+1][y]=4;
+        }
+        else if(this.arr[x+1][y]===7){
+          if(this.state.gameLevel < 4){
+            this.arr[x+1][y]=7;
+            this.arr = [];
+            this.setState({gameLevel: this.state.gameLevel+1})
+            this.set2DArray();
+          }
+        }
+        else if(this.arr[x+1][y]===8){
+          this.bossCombat();
+          console.log(this.state.bossHealth);
+          console.log(this.state.health);
+          if(this.state.bossHealth <= 0 && this.state.health > 0){
+             this.setState({showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose'});
+          }
+         else if(this.state.bossHealth > 0 && this.state.health <= 0){
+             this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
+         }
         }
       }
-      else if(this.arr[x+1][y]===6){
-        this.setState({weaponLevel: this.state.weaponLevel+1})
-        this.arr[x+1][y]=4;
+      if(this.state.lightsOn){
+        this.turnOnLight();
       }
-      else if(this.arr[x+1][y]===7){
-        if(this.state.gameLevel < 4){
-          this.arr[x+1][y]=7;
-          this.arr = [];
-          this.setState({gameLevel: this.state.gameLevel+1})
-          this.set2DArray();
-        }
+      else{
+        this.setMap(this.arr);
       }
-      else if(this.arr[x+1][y]===8){
-        this.bossCombat();
-        console.log(this.state.bossHealth);
-        console.log(this.state.health);
-        if(this.state.bossHealth <= 0 && this.state.health > 0){
-          this.setState(initialState)
-          this.set2DArray();
-        }
-       else if(this.state.bossHealth > 0 && this.state.health <= 0){
-         this.setState(initialState)
-         this.set2DArray();
-       }
-      }
-    }
-    if(this.state.lightsOn){
-      this.turnOnLight();
-    }
-    else{
-      this.setMap(this.arr);
-    }
-   }
-   if(e.key === 'ArrowRight'){
-     if(this.arr[x][y+1]===0){
-       return;
      }
-     if(this.arr[x][y]===4){
-       this.arr[x][y]=1;
-      if(this.arr[x][y+1]===1){
-        this.arr[x][y+1]=4;
-      }
-      else if(this.arr[x][y+1]===3){
-        this.setState({health: this.state.health+25})
-        this.arr[x][y+1]=4;
-      }
-      else if(this.arr[x][y+1]===5){
-        this.combat();
-        if(this.state.enemyHealth <=0 && this.state.health > 0){
+     if(e.key === 'ArrowRight'){
+       if(this.arr[x][y+1]===0){
+         return;
+       }
+       if(this.arr[x][y]===4){
+         this.arr[x][y]=1;
+        if(this.arr[x][y+1]===1){
           this.arr[x][y+1]=4;
-          this.resetEnemyHealth();
+        }
+        else if(this.arr[x][y+1]===3){
+          this.setState({health: this.state.health+25})
+          this.arr[x][y+1]=4;
+        }
+        else if(this.arr[x][y+1]===5){
+          this.combat();
+          if(this.state.enemyHealth <=0 && this.state.health > 0){
+            this.arr[x][y+1]=4;
+            this.resetEnemyHealth();
+          }
+        }
+        else if(this.arr[x][y+1]===6){
+          this.setState({weaponLevel: this.state.weaponLevel+1})
+          this.arr[x][y+1]=4;
+        }
+        else if(this.arr[x][y+1]===7){
+          if(this.state.gameLevel < 4){
+            this.arr[x][y+1]=7;
+            this.arr = [];
+            this.setState({gameLevel: this.state.gameLevel+1})
+            this.set2DArray();
+          }
+        }
+        else if(this.arr[x][y+1]===8){
+          this.bossCombat();
+          console.log(this.state.bossHealth);
+          console.log(this.state.health);
+          if(this.state.bossHealth <= 0 && this.state.health > 0){
+             this.setState({showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose'});
+          }
+         else if(this.state.bossHealth > 0 && this.state.health <= 0){
+             this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
+         }
         }
       }
-      else if(this.arr[x][y+1]===6){
-        this.setState({weaponLevel: this.state.weaponLevel+1})
-        this.arr[x][y+1]=4;
+      if(this.state.lightsOn){
+        this.turnOnLight();
       }
-      else if(this.arr[x][y+1]===7){
-        if(this.state.gameLevel < 4){
-          this.arr[x][y+1]=7;
-          this.arr = [];
-          this.setState({gameLevel: this.state.gameLevel+1})
-          this.set2DArray();
-        }
+      else{
+        this.setMap(this.arr);
       }
-      else if(this.arr[x][y+1]===8){
-        this.bossCombat();
-        console.log(this.state.bossHealth);
-        console.log(this.state.health);
-        if(this.state.bossHealth <= 0 && this.state.health > 0){
-          this.setState(initialState)
-          this.set2DArray();
-        }
-       else if(this.state.bossHealth > 0 && this.state.health <= 0){
-         this.setState(initialState)
-         this.set2DArray();
-       }
-      }
-    }
-    if(this.state.lightsOn){
-      this.turnOnLight();
-    }
-    else{
-      this.setMap(this.arr);
-    }
-   }
-   if(e.key === 'ArrowLeft'){
-     if(this.arr[x][y-1]===0){
-       return;
      }
-     if(this.arr[x][y]===4){
-       this.arr[x][y]=1;
-      if(this.arr[x][y-1]===1){
-        this.arr[x][y-1]=4;
-      }
-      else if(this.arr[x][y-1]===3){
-        this.setState({health: this.state.health+25})
-        this.arr[x][y-1]=4;
-      }
-      else if(this.arr[x][y-1]===5){
-        this.combat();
-        if(this.state.enemyHealth <=0 && this.state.health > 0){
-          this.arr[x][y-1]=4;
-          this.resetEnemyHealth();
-        }
-      }
-      else if(this.arr[x][y-1]===6){
-        this.setState({weaponLevel: this.state.weaponLevel+1})
-        this.arr[x][y-1]=4;
-      }
-      else if(this.arr[x][y-1]===7){
-        if(this.state.gameLevel < 4){
-          this.arr[x][y-1]=7;
-          this.arr = [];
-          this.setState({gameLevel: this.state.gameLevel+1})
-          this.set2DArray();
-        }
-      }
-      else if(this.arr[x][y-1]===8){
-        this.bossCombat();
-        console.log(this.state.bossHealth);
-        console.log(this.state.health);
-        if(this.state.bossHealth <= 0 && this.state.health > 0){
-          this.setState(initialState)
-          this.set2DArray();
-        }
-       else if(this.state.bossHealth > 0 && this.state.health <= 0){
-         this.setState(initialState)
-         this.set2DArray();
+     if(e.key === 'ArrowLeft'){
+       if(this.arr[x][y-1]===0){
+         return;
        }
+       if(this.arr[x][y]===4){
+         this.arr[x][y]=1;
+        if(this.arr[x][y-1]===1){
+          this.arr[x][y-1]=4;
+        }
+        else if(this.arr[x][y-1]===3){
+          this.setState({health: this.state.health+25})
+          this.arr[x][y-1]=4;
+        }
+        else if(this.arr[x][y-1]===5){
+          this.combat();
+          if(this.state.enemyHealth <=0 && this.state.health > 0){
+            this.arr[x][y-1]=4;
+            this.resetEnemyHealth();
+          }
+        }
+        else if(this.arr[x][y-1]===6){
+          this.setState({weaponLevel: this.state.weaponLevel+1})
+          this.arr[x][y-1]=4;
+        }
+        else if(this.arr[x][y-1]===7){
+          if(this.state.gameLevel < 4){
+            this.arr[x][y-1]=7;
+            this.arr = [];
+            this.setState({gameLevel: this.state.gameLevel+1})
+            this.set2DArray();
+          }
+        }
+        else if(this.arr[x][y-1]===8){
+          this.bossCombat();
+          console.log(this.state.bossHealth);
+          console.log(this.state.health);
+          if(this.state.bossHealth <= 0 && this.state.health > 0){
+             this.setState({showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose'});
+          }
+         else if(this.state.bossHealth > 0 && this.state.health <= 0){
+             this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
+         }
+        }
       }
-    }
-    if(this.state.lightsOn){
-      this.turnOnLight();
-    }
-    else{
-      this.setMap(this.arr);
-    }
+      if(this.state.lightsOn){
+        this.turnOnLight();
+      }
+      else{
+        this.setMap(this.arr);
+      }
+     }
    }
- }
  combat(){
    let playerTurn = 1;
    let enemyTurn = 0;
@@ -415,8 +414,8 @@ class Hello extends React.Component{
        this.setState({playerXP: this.state.playerXP+20})
      }
    if(this.state.health <= 0){
-     this.setState(initialState)
-     this.set2DArray(this.arr);
+       this.setState({showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose'});
+
    }
    if(this.state.playerXP === 40){
        this.setState({playerLevel: 2})
@@ -546,8 +545,12 @@ class Hello extends React.Component{
 
         }
         else if(arr[i][j] === 0){
-          if(i == 0 || j== 0 || i ==25 || j ==25 || i == 1 || j == 1|| i == 24 || j == 24){
+          if(i == 0 || j== 0 || i ==25 || j ==25){
             squares.push(<Square key = {size} class = "border"/>);
+            size--;
+          }
+          else if(i == 1 || j == 1|| i == 24 || j == 24){
+            squares.push(<Square key = {size} class = "wall dark"/>);
             size--;
           }
          else{
@@ -617,7 +620,7 @@ class Hello extends React.Component{
         size--;
       }
       else if(this.arr[i][j] === 0){
-        if(i == 0 || j== 0 || i ==25 || j ==25 || i == 1 || j == 1|| i == 24 || j == 24){
+        if(i == 0 || j== 0 || i ==25 || j ==25){
           squares.push(<Square key = {size} class = "border"/>);
           size--;
         }
@@ -625,6 +628,7 @@ class Hello extends React.Component{
           squares.push(<Square key = {size} class = "wall"/>);
           size--;
         }
+
       }
       else if(this.arr[i][j] === 1){
         squares.push(<Square  key = {size} class = "floor"/>);
@@ -648,17 +652,32 @@ swap(){
     this.setMap(this.arr);
   }
 }
+restartGame(){
+  this.setState(initialState);
+  this.set2DArray();
+  this.setMap(this.arr);
+}
   render(){
     return(
-      <div>
-      <h3>Game Level: {this.state.gameLevel}</h3>
-      <h3>Player Experience: {this.state.playerXP}</h3>
-      <h3>Player Level: {this.state.playerLevel}</h3>
-      <h3>Player Health: {this.state.health}</h3>
-      <h3>Weapon: {this.state.weapons[this.state.weaponLevel].weapon}</h3>
-      <h3>Attack: {this.state.weapons[this.state.weaponLevel].damage}</h3>
-      <button onClick={this.swap}>{this.state.lightsOn ? 'Toggle Dark':'Toggle Light'}</button>
-      {this.state.map}
+      <div className="wrapper">
+        <h1>React Dungeon Crawler</h1>
+        <div className="levels">
+          <h3>Player Experience: {this.state.playerXP}</h3>
+          <h3>Player Level: {this.state.playerLevel}</h3>
+        </div>
+        <div className="health-weapons">
+          <h3>Player Health: {this.state.health}</h3>
+          <h3>Weapon: {this.state.weapons[this.state.weaponLevel].weapon}</h3>
+          <h3>Attack: {this.state.weapons[this.state.weaponLevel].damage}</h3>
+        </div>
+        <div className={this.state.showMap}>
+          <button className="btn" onClick={this.swap}>{this.state.lightsOn ? 'Toggle Fog':'Toggle Light'}</button>
+          {this.state.map}
+        </div>
+        <div className={this.state.showWinOrLose}>
+          <h1>{this.state.win ? 'YOU WON!': 'YOU DIED!'}</h1>
+          <button className="btn" onClick={this.restartGame}>Play Again?</button>
+        </div>
       </div>
     )
   }
