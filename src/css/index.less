@@ -1,9 +1,18 @@
+@import url('https://fonts.googleapis.com/css?family=Overpass|Overpass+Mono');
+@font: 'Overpass Mono', monospace;
+@square-padding: 8px;
+body{
+  font-family: @font;
+}
 .wrapper{
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: auto;
+}
+.instructions{
+  margin-top: 0;
 }
 .levels h3{
   display: inline;
@@ -26,16 +35,16 @@
 }
 .floor{
   background: #CC996D;
-  padding: 8px;
+  padding: @square-padding;
   border: 1px solid transparent;
 }
 .wall{
   background: #C7DECB;
-  padding: 8px;
+  padding: @square-padding;
   border: 1px solid black;
 }
 .player {
-  padding: 8px;
+  padding: @square-padding;
   background: blue;
   border: 1px solid black;
 }
@@ -45,32 +54,32 @@
   border: 1px solid black;
 }
 .enemy{
-  padding: 8px;
+  padding: @square-padding;
   background: red;
   border: 1px solid black;
 }
 .weapon {
-  padding: 8px;
+  padding: @square-padding;
   background: yellow;
   border: 1px solid black;
 }
 .door {
-  padding: 8px;
+  padding: @square-padding;
   background: purple;
   border: 1px solid black;
 }
 .boss {
-  padding: 8px;
+  padding: @square-padding;
   background: #ff8402;
   border: 1px solid black;
 }
 .dark{
-  padding: 8px;
+  padding: @square-padding;
   background: #474C66;
   border: 1px solid transparent;
 }
 .border{
-  padding: 8px;
+  padding: @square-padding;
   background: #303030;
   border: 1px solid transparent;
 }

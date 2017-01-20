@@ -21825,13 +21825,6 @@ var Hello = function (_React$Component) {
             }
           } else if (this.arr[x - 1][y] === 8) {
             this.bossCombat();
-            console.log(this.state.bossHealth);
-            console.log(this.state.health);
-            if (this.state.bossHealth <= 0 && this.state.health > 0) {
-              this.setState({ showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose' });
-            } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
-              this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
-            }
           }
         }
         if (this.state.lightsOn) {
@@ -21869,13 +21862,6 @@ var Hello = function (_React$Component) {
             }
           } else if (this.arr[x + 1][y] === 8) {
             this.bossCombat();
-            console.log(this.state.bossHealth);
-            console.log(this.state.health);
-            if (this.state.bossHealth <= 0 && this.state.health > 0) {
-              this.setState({ showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose' });
-            } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
-              this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
-            }
           }
         }
         if (this.state.lightsOn) {
@@ -21913,13 +21899,6 @@ var Hello = function (_React$Component) {
             }
           } else if (this.arr[x][y + 1] === 8) {
             this.bossCombat();
-            console.log(this.state.bossHealth);
-            console.log(this.state.health);
-            if (this.state.bossHealth <= 0 && this.state.health > 0) {
-              this.setState({ showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose' });
-            } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
-              this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
-            }
           }
         }
         if (this.state.lightsOn) {
@@ -21957,13 +21936,6 @@ var Hello = function (_React$Component) {
             }
           } else if (this.arr[x][y - 1] === 8) {
             this.bossCombat();
-            console.log(this.state.bossHealth);
-            console.log(this.state.health);
-            if (this.state.bossHealth <= 0 && this.state.health > 0) {
-              this.setState({ showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose' });
-            } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
-              this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
-            }
           }
         }
         if (this.state.lightsOn) {
@@ -21992,7 +21964,8 @@ var Hello = function (_React$Component) {
         this.setState({ playerXP: this.state.playerXP + 20 });
       }
       if (this.state.health <= 0) {
-        this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose' });
+        this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose', lightsOn: false, gameLevel: 1 });
+        this.setMap(this.arr);
       }
       if (this.state.playerXP === 40) {
         this.setState({ playerLevel: 2 });
@@ -22020,6 +21993,13 @@ var Hello = function (_React$Component) {
           playerTurn++;
         }
       }
+      if (this.state.bossHealth <= 0 && this.state.health > 0) {
+        this.setState({ showMap: 'hideMap', win: true, showWinOrLose: 'showWinOrLose', lightsOn: false, gameLevel: 1 });
+        this.setMap(this.arr);
+      } else if (this.state.bossHealth > 0 && this.state.health <= 0) {
+        this.setState({ showMap: 'hideMap', win: false, showWinOrLose: 'showWinOrLose', lightsOn: false, gameLevel: 1 });
+        this.setMap(this.arr);
+      }
     }
   }, {
     key: 'enemyAttack',
@@ -22031,7 +22011,6 @@ var Hello = function (_React$Component) {
     value: function playerAttack() {
       if (this.state.playerLevel === 1) {
         this.setState({ enemyHealth: this.state.enemyHealth - this.state.weapons[this.state.weaponLevel].damage });
-        console.log(this.state.enemyHealth);
       } else if (this.state.playerLevel === 2) {
         this.setState({ enemyHealth: this.state.enemyHealth - (this.state.weapons[this.state.weaponLevel].damage + 10) });
       } else if (this.state.playerLevel === 3) {
@@ -22215,7 +22194,6 @@ var Hello = function (_React$Component) {
     value: function restartGame() {
       this.setState(initialState);
       this.set2DArray();
-      this.setMap(this.arr);
     }
   }, {
     key: 'render',
@@ -22227,6 +22205,11 @@ var Hello = function (_React$Component) {
           'h1',
           null,
           'React Dungeon Crawler'
+        ),
+        _react2.default.createElement(
+          'h2',
+          { className: 'instructions' },
+          'Kill the Boss in Dungeon 4'
         ),
         _react2.default.createElement(
           'div',
