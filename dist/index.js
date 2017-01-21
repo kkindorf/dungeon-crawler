@@ -21494,83 +21494,11 @@ module.exports = traverseAllChildren;
 module.exports = require('./lib/React');
 
 },{"./lib/React":156}],179:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Map = function Map(props) {
-  return _react2.default.createElement(
-    "div",
-    null,
-    _react2.default.createElement(
-      "div",
-      { className: "board", onKeyDown: props.onKeyDown },
-      props.rows
-    )
-  );
-};
-exports.default = Map;
-
-},{"react":178}],180:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Row = function Row(props) {
-  return _react2.default.createElement(
-    "div",
-    null,
-    _react2.default.createElement(
-      "div",
-      { className: "rows" },
-      props.squares
-    )
-  );
-};
-
-exports.default = Row;
-
-},{"react":178}],181:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Square = function Square(props) {
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement('div', { className: props.class })
-  );
-};
-
-exports.default = Square;
-
-},{"react":178}],182:[function(require,module,exports){
-'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -21582,11 +21510,11 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _square = require('./components/square');
+var _square = require('./square');
 
 var _square2 = _interopRequireDefault(_square);
 
-var _row = require('./components/row');
+var _row = require('./row');
 
 var _row2 = _interopRequireDefault(_row);
 
@@ -21606,13 +21534,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var initialState = { squareNum: 26, rowNum: 26, map: [], health: 200, weapons: [{ weapon: 'nunchucks', damage: 10 }, { weapon: 'sword', damage: 20 }, { weapon: 'AK-47', damage: 40 }, { weapon: 'Bazooka', damage: 60 }, { weapon: 'BFG', damage: 100 }], playerLevel: 1, gameLevel: 1, enemyHealth: 150, bossHealth: 450, enemyDamage: Math.floor(Math.random() * (9 - 6 + 1)) + 6, playerXP: 0, bossDamage: Math.floor(Math.random() * (30 - 25 + 1)) + 25, weaponLevel: 0, lightsOn: false, showMap: 'showMap', showWinOrLose: 'hideWinOrLose', win: false };
 
-var Hello = function (_React$Component) {
-  _inherits(Hello, _React$Component);
+var GameContainer = function (_React$Component) {
+  _inherits(GameContainer, _React$Component);
 
-  function Hello(props) {
-    _classCallCheck(this, Hello);
+  function GameContainer(props) {
+    _classCallCheck(this, GameContainer);
 
-    var _this = _possibleConstructorReturn(this, (Hello.__proto__ || Object.getPrototypeOf(Hello)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (GameContainer.__proto__ || Object.getPrototypeOf(GameContainer)).call(this, props));
 
     _this.state = initialState;
     _this.arr = [];
@@ -21636,7 +21564,7 @@ var Hello = function (_React$Component) {
 
   /*** GENERATE INITIAL 2D ARRAY ***/
 
-  _createClass(Hello, [{
+  _createClass(GameContainer, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
       this.set2DArray();
@@ -22277,9 +22205,104 @@ var Hello = function (_React$Component) {
     }
   }]);
 
-  return Hello;
+  return GameContainer;
 }(_react2.default.Component);
 
-_reactDom2.default.render(_react2.default.createElement(Hello, null), document.getElementById("app"));
+exports.default = GameContainer;
 
-},{"./components/row":180,"./components/square":181,"mousetrap":24,"react":178,"react-dom":27}]},{},[179,180,181,182]);
+},{"./row":181,"./square":182,"mousetrap":24,"react":178,"react-dom":27}],180:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Map = function Map(props) {
+  return _react2.default.createElement(
+    "div",
+    null,
+    _react2.default.createElement(
+      "div",
+      { className: "board", onKeyDown: props.onKeyDown },
+      props.rows
+    )
+  );
+};
+exports.default = Map;
+
+},{"react":178}],181:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Row = function Row(props) {
+  return _react2.default.createElement(
+    "div",
+    null,
+    _react2.default.createElement(
+      "div",
+      { className: "rows" },
+      props.squares
+    )
+  );
+};
+
+exports.default = Row;
+
+},{"react":178}],182:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Square = function Square(props) {
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement('div', { className: props.class })
+  );
+};
+
+exports.default = Square;
+
+},{"react":178}],183:[function(require,module,exports){
+'use strict';
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _gameContainer = require('./components/game-container');
+
+var _gameContainer2 = _interopRequireDefault(_gameContainer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_reactDom2.default.render(_react2.default.createElement(_gameContainer2.default, null), document.getElementById("app"));
+
+},{"./components/game-container":179,"react":178,"react-dom":27}]},{},[179,180,181,182,183]);
